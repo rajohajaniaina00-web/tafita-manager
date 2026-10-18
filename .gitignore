@@ -1,0 +1,31 @@
+# Environnement Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Secrets et variables d'environnement
+.env
+.env.*
+!.env.example
+
+# Bases de données et sauvegardes
+*.sqlite3
+*.sqlite3-*
+*.sqlite3.*
+backups/
+
+# Fichiers générés
+staticfiles/
+media/
+*.log
+
+# macOS
+.DS_Store
+config/settings.py.backup
+
+# Anciennes sauvegardes locales de fichiers
+*.bak
+*.backup
+*.backup-*
+*.before-*.bak

@@ -1,0 +1,274 @@
+
+{% extends "base.html" %}
+{% block title %}{% if editing %}Modifier{% else %}Ajouter{% endif %} un événement | TaFiTa Manager{% endblock %}
+{% block page_heading %}{% if editing %}Modifier{% else %}Ajouter{% endif %} un événement{% endblock %}
+
+{% block extra_css %}
+<style>
+.event-form {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+.form-section-heading {
+    margin: 0 0 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.form-section-heading h2 {
+    margin: 0 0 6px;
+    font-size: 19px;
+    letter-spacing: -0.3px;
+}
+
+.form-section-heading p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.form-field {
+    display: grid;
+    align-content: start;
+    gap: 9px;
+    min-width: 0;
+}
+
+.form-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-field label {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 13px 14px;
+    border: 1px solid #dfe5ef;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.form-field input,
+.form-field select {
+    min-height: 47px;
+}
+
+.form-field textarea {
+    min-height: 135px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, .12);
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+    color: #a0a9b8;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+}
+
+.form-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 11px 18px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+}
+
+.form-button:hover {
+    transform: translateY(-1px);
+}
+
+.form-button.primary {
+    background: var(--primary);
+    color: white;
+}
+
+.form-button.primary:hover {
+    background: #3451dc;
+}
+
+.form-button.secondary {
+    border-color: var(--border);
+    background: white;
+    color: var(--text);
+}
+
+.form-button.secondary:hover {
+    background: #f7f8fc;
+}
+
+.form-messages {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.form-message {
+    padding: 13px 15px;
+    border: 1px solid #c9efda;
+    border-radius: 10px;
+    background: #edfbf3;
+    color: #176b42;
+    font-size: 13px;
+}
+
+@media (max-width: 600px) {
+    .event-form {
+        padding: 20px 16px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .form-field.full-width {
+        grid-column: auto;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .form-button {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="page-intro">
+    <div>
+        <h1>Ajouter un événement</h1>
+        <p>Renseignez les informations de la prochaine activité.</p>
+    </div>
+</div>
+
+<section class="dashboard-panel event-form">
+    <div class="form-section-heading">
+        <h2>{% if editing %}Modifier les informations{% else %}Informations de l'événement{% endif %}</h2>
+        <p>Les champs marqués d'un astérisque (*) sont obligatoires.</p>
+    </div>
+    {% if messages and request.method == "POST" %}
+        <div class="form-messages">
+            {% for message in messages %}
+                <div class="form-message">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post" action="{% if editing %}{% url 'event_update' event.pk %}{% else %}{% url 'event_create' %}{% endif %}">
+        {% csrf_token %}
+
+        <div class="form-grid">
+            <div class="form-field full-width">
+                <label for="title">Titre de l'événement *</label>
+                <input id="title" name="title" type="text"
+                    maxlength="200" required
+                    value="{% if request.POST.title %}{{ request.POST.title }}{% elif event %}{{ event.title }}{% endif %}">
+            </div>
+            <div class="form-field">
+                <label for="date">Date et heure de début *</label>
+                <input id="date" name="date" type="datetime-local"
+                    required
+                    value="{% if request.POST.date %}{{ request.POST.date }}{% elif event %}{{ event.date|date:'Y-m-d\TH:i' }}{% endif %}">
+            </div>
+            <div class="form-field">
+                <label for="end_date">Date et heure de fin *</label>
+                <input id="end_date" name="end_date" type="datetime-local"
+                    required
+                    value="{% if request.POST.end_date %}{{ request.POST.end_date }}{% elif event and event.end_date %}{{ event.end_date|date:'Y-m-d\TH:i' }}{% endif %}">
+            </div>
+            <div class="form-field">
+                <label for="location">Lieu *</label>
+                <input id="location" name="location" type="text"
+                    maxlength="200" required
+                    value="{% if request.POST.location %}{{ request.POST.location }}{% elif event %}{{ event.location }}{% endif %}">
+            </div>
+            <div class="form-field">
+                <label for="responsible">Responsable *</label>
+                <input id="responsible" name="responsible" type="text"
+                    maxlength="150" required
+                    value="{% if request.POST.responsible %}{{ request.POST.responsible }}{% elif event %}{{ event.responsible }}{% endif %}">
+            </div>
+
+            <div class="form-field">
+                {% if editing %}
+                <div class="form-field">
+                    <label for="cancelled">Annulation</label>
+                    <div>
+                        <input id="cancelled" name="cancelled" type="checkbox"
+                            {% if event.status == "cancelled" %}checked{% endif %}>
+                        <span>Événement annulé</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-field full-width">
+                <label for="description">Description</label>
+                <textarea id="description" name="description"
+                        placeholder="Décrivez l'activité prévue...">
+                        {% if request.POST.description %}{{ request.POST.description }}{% elif event %}{{ event.description }}{% endif %}
+                    </textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'events_list' %}" class="form-button secondary">
+                Annuler
+            </a>
+            <button type="submit" class="form-button primary">
+                Enregistrer l'événement
+            </button>
+        </div>
+    </form>
+</section>
+{% endblock %}

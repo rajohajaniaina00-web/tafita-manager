@@ -1,0 +1,110 @@
+ {% extends "base.html" %}
+{% load static %}
+{% block title %}Cotisations | TaFiTa Manager{% endblock %}
+{% block page_heading %}Cotisations{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contributions.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="content-section">
+    <div class="section-header">
+        <div>
+            <h1>Gestion des cotisations</h1>
+            <p class="muted">
+                Suivez les montants attendus, les paiements et les soldes des membres.
+            </p>
+        </div>
+
+        <a class="button primary" href="{% url 'contribution_create' %}">
+            + Ajouter une cotisation
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="get" class="search-form">
+        <input
+            type="search"
+            name="q"
+            value="{{ query }}"
+            placeholder="Rechercher par cotisation ou par membre..."
+        >
+        <button class="button primary" type="submit">Rechercher</button>
+        {% if query %}
+            <a class="button secondary" href="{% url 'contribution_list' %}">
+                Réinitialiser
+            </a>
+        {% endif %}
+    </form>
+
+    <div class="panel">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cotisation</th>
+                        <th>Membre</th>
+                        <th>Montant attendu</th>
+                        <th>Total payé</th>
+                        <th>Reste à payer</th>
+                        <th>Échéance</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contribution in contributions %}
+                    <tr>
+                        <td>
+                            <strong>{{ contribution.title }}</strong>
+                        </td>
+                        <td>{{ contribution.member }}</td>
+                        <td>{{ contribution.amount }} Ar</td>
+                        <td>{{ contribution.total_paid }} Ar</td>
+                        <td>{{ contribution.remaining_amount }} Ar</td>
+                        <td>
+                            {% if contribution.due_date %}
+                                {{ contribution.due_date|date:"d/m/Y" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="status-badge status-{{ contribution.current_status }}">
+                                {{ contribution.current_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if contribution.remaining_amount > 0 %}
+                                <a class="button small primary"
+                                   href="{% url 'payment_create' contribution.pk %}">
+                                    Enregistrer un paiement
+                                </a>
+                            {% else %}
+                                <span>Solde réglé</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8">
+                            Aucune cotisation trouvée.
+                            {% if query %}
+                                Essayez un autre terme de recherche.
+                            {% else %}
+                                Commencez par ajouter une cotisation.
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

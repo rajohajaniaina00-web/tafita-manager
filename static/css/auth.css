@@ -1,0 +1,253 @@
+
+:root {
+    --navy: #10243a;
+    --navy-light: #183751;
+    --teal: #27c5b5;
+    --text: #182b3c;
+    --muted: #758394;
+    --border: #dce4eb;
+    --surface: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    color: var(--text);
+    background: #f5f7fa;
+}
+
+.auth-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+}
+
+.brand-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 52px 9%;
+    color: white;
+    background:
+        radial-gradient(circle at 15% 80%, #24556a 0, transparent 35%),
+        linear-gradient(145deg, var(--navy), var(--navy-light));
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    text-decoration: none;
+    font-size: 21px;
+    font-weight: 750;
+}
+
+.brand-mark {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    color: var(--navy);
+    background: var(--teal);
+    font-size: 24px;
+}
+
+.brand-light {
+    font-weight: 400;
+    color: #c3d4e1;
+}
+
+.brand-content {
+    max-width: 510px;
+    margin: 70px auto;
+}
+
+.eyebrow {
+    color: #168e86;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.brand-panel .eyebrow {
+    color: #6de1d4;
+}
+
+.brand-content h1 {
+    margin: 22px 0;
+    font-size: clamp(36px, 4vw, 56px);
+    line-height: 1.12;
+    letter-spacing: -1.8px;
+}
+
+.brand-content p {
+    max-width: 430px;
+    color: #c4d2df;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.brand-footer {
+    color: #a9bece;
+    font-size: 12px;
+}
+
+.form-panel {
+    display: grid;
+    place-items: center;
+    padding: 42px 24px;
+    background: var(--surface);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 410px;
+}
+
+.login-card h2 {
+    margin: 13px 0 8px;
+    font-size: 34px;
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    margin: 0 0 34px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.field {
+    margin-bottom: 23px;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 9px;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.field input {
+    width: 100%;
+    min-height: 49px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    outline: none;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field input:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgb(39 197 181 / 15%);
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-right: 82px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: #148f86;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.submit-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 51px;
+    margin-top: 10px;
+    padding: 0 17px;
+    border: 0;
+    border-radius: 9px;
+    color: white;
+    background: var(--navy);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.submit-button:hover {
+    background: #1b405e;
+    transform: translateY(-1px);
+}
+
+.security-note {
+    margin-top: 27px;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+.security-note span {
+    margin-right: 5px;
+    color: #1aa696;
+}
+
+.notice {
+    margin-bottom: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #fff0f0;
+    color: #a22d37;
+    font-size: 13px;
+}
+
+.mobile-brand {
+    display: none;
+}
+
+@media (max-width: 760px) {
+    .auth-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .brand-panel {
+        display: none;
+    }
+
+    .form-panel {
+        min-height: 100vh;
+        padding: 32px 24px;
+    }
+
+    .mobile-brand {
+        display: block;
+        margin-bottom: 42px;
+        color: var(--navy);
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .login-card h2 {
+        font-size: 30px;
+    }
+}

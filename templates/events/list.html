@@ -1,0 +1,80 @@
+
+{% extends "base.html" %}
+
+{% block title %}Événements | TaFiTa Manager{% endblock %}
+{% block page_heading %}Événements{% endblock %}
+
+{% block content %}
+
+<div class="page-intro">
+    <div>
+        <h1>Gestion des événements</h1>
+        <p>Consultez et organisez les activités de votre association.</p>
+    </div>
+
+    <a href="{% url 'event_create' %}" class="form-button primary">
+        + Ajouter un événement
+    </a>
+</div>
+
+
+<section class="dashboard-panel">
+    <div class="panel-heading">
+        <div>
+            <h2>Liste des événements</h2>
+            <p>Les événements enregistrés dans TaFiTa Manager.</p>
+        </div>
+        <span class="panel-mark">T</span>
+    </div>
+
+    {% if events %}
+        <div class="events-list">
+            {% for event in events %}
+                <article class="event-item">
+                    <div class="event-date">
+                        {{ event.date|date:"d" }}
+                        <span>{{ event.date|date:"M Y" }}</span>
+                    </div>
+
+                    <div class="event-details">
+                        <h3>{{ event.title }}</h3>
+                        <p>{{ event.location }}</p>
+                        <p>Responsable : {{ event.responsible }}</p>
+                        {% if event.description %}
+                            <p>{{ event.description|truncatewords:20 }}</p>
+                        {% endif %}
+                    </div>
+                    <span class="event-status status-{{ event.current_status }}">
+                        {{ event.current_status_display }}
+                    </span>
+                        <div class="event-actions">
+                            <a href="{% url 'event_update' event.pk %}"
+                            class="event-action edit-action">
+                                Modifier
+                            </a>
+
+                            <form method="post"
+                                action="{% url 'event_delete' event.pk %}"
+                                onsubmit="return confirm('Voulez-vous vraiment supprimer cet événement ?');">
+                                {% csrf_token %}
+                                <button type="submit" class="event-action delete-action">
+                                    Supprimer
+                                </button>
+                            </form>
+                        </div>
+                    </article>
+
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">▦</div>
+            <h3>Aucun événement pour le moment</h3>
+            <p>Ajoutez votre premier événement depuis l'administration Django.</p>
+            <a class="action-card" href="/admin/events/event/">
+                Ouvrir l'administration →
+            </a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

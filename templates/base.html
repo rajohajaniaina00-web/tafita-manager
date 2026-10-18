@@ -1,0 +1,98 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TaFiTa Manager{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <a class="brand" href="{% url 'dashboard' %}">
+                <span class="brand-logo">T</span>
+                <span>
+                    <strong>TaFiTa</strong>
+                    <small>MANAGER</small>
+                </span>
+            </a>
+
+            <div class="sidebar-label">MENU PRINCIPAL</div>
+
+            <nav class="sidebar-nav">
+                <a href="{% url 'dashboard' %}" class="nav-link">
+                    <span class="nav-icon">⌂</span>
+                    <span>Tableau de bord</span>
+                </a>
+                <a href="{% url 'member_list' %}" class="nav-link">
+                    <span class="nav-icon">♙</span>
+                    <span>Membres</span>
+                </a>
+                <a href="{% url 'events_list' %}" class="nav-link">
+                    <span class="nav-icon">▦</span>
+                    <span>Événements</span>
+                </a>
+
+                {% if perms.contributions.view_contribution %}
+                <a href="{% url 'contribution_list' %}" class="nav-link">
+                    <span class="nav-icon">₳</span>
+                    <span>Cotisations</span>
+                </a>
+                {% endif %}
+
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="sidebar-note">
+                    <strong>TaFiTa Association</strong>
+                    <p>Gérez vos activités en toute simplicité.</p>
+                </div>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link logout-link logout-button">
+                        <span class="nav-icon">↪</span>
+                        <span>Déconnexion</span>
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <main class="main-area">
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle"
+                        aria-label="Ouvrir le menu">☰</button>
+
+                <div class="topbar-context">
+                    <span class="topbar-overline">ESPACE DE GESTION</span>
+                    <strong>{% block page_heading %}Tableau de bord{% endblock %}</strong>
+                </div>
+
+                <div class="topbar-user">
+                    <div class="user-avatar">
+                        {{ request.user.username|first|upper }}
+                    </div>
+                    <div class="user-info">
+                        <strong>{{ request.user.username }}</strong>
+                        <span>Administrateur</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="page-content">
+                {% block content %}{% endblock %}
+            </section>
+
+            <footer class="app-footer">
+                <span>TaFiTa Manager</span>
+                <span>Gestion associative</span>
+            </footer>
+        </main>
+    </div>
+
+    <script src="{% static 'js/app.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }} | TaFiTa Manager{% endblock %}
+{% block page_heading %}{{ page_title }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contributions.css' %}">
+{% endblock %}
+{% block content %}
+<section class="content-section">
+    <a class="back-link" href="{% url 'contribution_list' %}">
+        ← Retour aux cotisations
+    </a>
+
+    <div class="panel form-panel">
+        <h1>{{ page_title }}</h1>
+        <p class="muted">
+            Associez la cotisation à un membre et indiquez le montant attendu en ariary.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="message error">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <div class="form-field">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                        {% if field.field.required %}*{% endif %}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <small>{{ field.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <div class="form-actions">
+                <a class="button secondary"
+                   href="{% url 'contribution_list' %}">
+                    Annuler
+                </a>
+
+                <button class="button primary" type="submit">
+                    Enregistrer la cotisation
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

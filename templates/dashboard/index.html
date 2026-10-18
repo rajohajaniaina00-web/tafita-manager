@@ -1,0 +1,730 @@
+
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord | TaFiTa Manager{% endblock %}
+{% block page_heading %}Tableau de bord{% endblock %}
+
+{% block content %}
+<style>
+.dashboard-page {
+    color: #172033;
+}
+
+.dashboard-intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.dashboard-intro h1 {
+    margin: 0 0 7px;
+    font-size: 26px;
+    font-weight: 750;
+    letter-spacing: -0.6px;
+}
+
+.dashboard-intro p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.dashboard-date {
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
+    gap: 17px;
+    margin-bottom: 24px;
+}
+
+.dashboard-card,
+.dashboard-panel {
+    background: #fff;
+    border: 1px solid #e5eaf1;
+    border-radius: 15px;
+    padding: 21px;
+    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.035);
+}
+
+.dashboard-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: #2563eb;
+}
+
+.dashboard-card:nth-child(2)::before {
+    background: #0d9488;
+}
+
+.dashboard-card:nth-child(3)::before {
+    background: #7c3aed;
+}
+
+.dashboard-card:nth-child(4)::before {
+    background: #16a34a;
+}
+
+.dashboard-card:nth-child(5)::before {
+    background: #ea580c;
+}
+
+.dashboard-card:nth-child(6)::before {
+    background: #64748b;
+}
+
+.dashboard-card-label {
+    margin: 0 0 12px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.dashboard-number {
+    overflow-wrap: anywhere;
+    color: #0f172a;
+    font-size: clamp(22px, 2vw, 29px);
+    font-weight: 750;
+    letter-spacing: -0.7px;
+}
+
+.dashboard-detail {
+    margin-top: 10px;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.dashboard-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.dashboard-panel {
+    min-width: 0;
+    margin-bottom: 24px;
+}
+
+.dashboard-columns .dashboard-panel {
+    margin-bottom: 0;
+}
+
+.dashboard-panel h2 {
+    margin: 0 0 7px;
+    color: #172033;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.dashboard-panel-subtitle {
+    margin: 0 0 18px;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.dashboard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dashboard-list li {
+    padding: 14px 0;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.dashboard-list li:last-child {
+    border-bottom: none;
+}
+
+.dashboard-item-title {
+    color: #1e293b;
+    font-size: 14px;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.dashboard-item-detail {
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.dashboard-payment-amount {
+    margin-top: 7px;
+    color: #15803d;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.dashboard-empty {
+    padding: 18px 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.dashboard-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 18px;
+}
+
+.dashboard-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 13px;
+    border-radius: 9px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 650;
+    transition: background 0.2s ease;
+}
+
+.dashboard-links a:hover {
+    background: #dbeafe;
+}
+
+.dashboard-chart-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    margin-top: 12px;
+}
+
+#paymentsChart {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.dashboard-progress-track {
+    width: 100%;
+    height: 9px;
+    margin-top: 16px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #e9eef5;
+}
+
+.dashboard-progress-bar {
+    height: 100%;
+    border-radius: 20px;
+    background: #16a34a;
+    transition: width 0.3s ease;
+}
+
+.dashboard-progress-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 9px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.dashboard-event-date {
+    color: #1d4ed8;
+    font-weight: 650;
+}
+
+@media (max-width: 760px) {
+    .dashboard-columns {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .dashboard-intro h1 {
+        font-size: 23px;
+    }
+
+    .dashboard-card,
+    .dashboard-panel {
+        padding: 17px;
+    }
+
+    .dashboard-chart-container {
+        height: 260px;
+    }
+}
+
+@media (max-width: 380px) {
+    .dashboard-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .dashboard-chart-container {
+        height: 230px;
+    }
+}
+</style>
+
+<div class="dashboard-page">
+
+    <header class="dashboard-intro">
+        <div>
+            <h1>Bonjour, {{ request.user.username }} !</h1>
+            <p>Voici la situation réelle de votre association.</p>
+        </div>
+
+        <div class="dashboard-date">
+            {{ today|date:"d/m/Y" }}
+        </div>
+    </header>
+
+    <section class="dashboard-grid"
+             aria-label="Statistiques de l'association">
+
+        {% if can_view_members %}
+        <article class="dashboard-card">
+            <p class="dashboard-card-label">Membres inscrits</p>
+            <div class="dashboard-number">
+                {{ members_total }}
+            </div>
+            <div class="dashboard-detail">
+                {{ members_active }} actif(s)
+                · {{ members_inactive }} inactif(s)
+            </div>
+        </article>
+        {% endif %}
+
+        {% if can_view_events %}
+        <article class="dashboard-card">
+            <p class="dashboard-card-label">Événements</p>
+            <div class="dashboard-number">
+                {{ events_total }}
+            </div>
+            <div class="dashboard-detail">
+                {{ events_upcoming_count }} à venir
+                · {{ events_completed_count }} terminé(s)
+            </div>
+        </article>
+        {% endif %}
+
+        {% if can_view_finances %}
+        <article class="dashboard-card">
+            <p class="dashboard-card-label">Cotisations attendues</p>
+            <div class="dashboard-number">
+                {{ expected_total|floatformat:0 }} Ar
+            </div>
+            <div class="dashboard-detail">
+                Montant total enregistré
+            </div>
+        </article>
+
+        <article class="dashboard-card">
+            <p class="dashboard-card-label">Montant encaissé</p>
+            <div class="dashboard-number">
+                {{ paid_total|floatformat:0 }} Ar
+            </div>
+            <div class="dashboard-detail">
+                Total des paiements enregistrés
+            </div>
+        </article>
+
+        <article class="dashboard-card">
+            <p class="dashboard-card-label">Reste à encaisser</p>
+            <div class="dashboard-number">
+                {{ remaining_total|floatformat:0 }} Ar
+            </div>
+            <div class="dashboard-detail">
+                Dont {{ overdue_total|floatformat:0 }} Ar en retard
+            </div>
+        </article>
+
+        <article class="dashboard-card">
+            <p class="dashboard-card-label">Cotisations</p>
+            <div class="dashboard-number">
+                {{ contributions_total }}
+            </div>
+            <div class="dashboard-detail">
+                {{ contributions_paid_count }} soldée(s)
+                · {{ contributions_unpaid_count }} à régler
+            </div>
+        </article>
+        {% endif %}
+
+    </section>
+
+    {% if can_view_finances %}
+    <section class="dashboard-panel">
+        <h2>Progression des cotisations</h2>
+        <p class="dashboard-panel-subtitle">
+            Part du montant attendu déjà encaissée.
+        </p>
+
+        <div class="dashboard-number">
+            {% if expected_total > 0 %}
+                {% widthratio paid_total expected_total 100 %}%
+            {% else %}
+                0%
+            {% endif %}
+        </div>
+
+        <div class="dashboard-progress-track"
+             role="progressbar"
+             aria-label="Progression des cotisations"
+             aria-valuemin="0"
+             aria-valuemax="100"
+             aria-valuenow="{% if expected_total > 0 %}{% widthratio paid_total expected_total 100 %}{% else %}0{% endif %}">
+            <div class="dashboard-progress-bar"
+                 style="width: {% if expected_total > 0 %}{% widthratio paid_total expected_total 100 %}{% else %}0{% endif %}%;"></div>
+        </div>
+
+        <div class="dashboard-progress-label">
+            <span>Encaissé : {{ paid_total|floatformat:0 }} Ar</span>
+            <span>Attendu : {{ expected_total|floatformat:0 }} Ar</span>
+        </div>
+    </section>
+
+    <!-- Graphique natif : aucune bibliothèque externe -->
+    <section class="dashboard-panel">
+        <h2>Évolution des cotisations encaissées</h2>
+        <p class="dashboard-panel-subtitle">
+            Montants réellement reçus au cours des six derniers mois.
+        </p>
+
+        <div class="dashboard-chart-container">
+            <canvas id="paymentsChart"
+                    role="img"
+                    aria-label="Graphique des paiements mensuels">
+                Graphique des paiements mensuels.
+            </canvas>
+        </div>
+
+        <p id="paymentsChartEmpty"
+           class="dashboard-empty"
+           style="display: none;">
+            Aucun paiement enregistré sur cette période.
+        </p>
+    </section>
+
+    {{ month_labels|json_script:"payments-month-labels" }}
+    {{ month_values|json_script:"payments-month-values" }}
+    {% endif %}
+
+    {% if can_view_finances %}
+    <script>
+    (function () {
+        "use strict";
+
+        const canvas = document.getElementById("paymentsChart");
+        const emptyMessage = document.getElementById("paymentsChartEmpty");
+        const labelsElement = document.getElementById("payments-month-labels");
+        const valuesElement = document.getElementById("payments-month-values");
+
+        if (!canvas || !labelsElement || !valuesElement) {
+            return;
+        }
+
+        const labels = JSON.parse(labelsElement.textContent);
+        const values = JSON.parse(valuesElement.textContent)
+            .map(function (value) {
+                return Number(value) || 0;
+            });
+
+        function formatAmount(value) {
+            return new Intl.NumberFormat("fr-FR", {
+                maximumFractionDigits: 0
+            }).format(value) + " Ar";
+        }
+
+        function drawChart() {
+            const width = canvas.clientWidth;
+
+            if (width <= 0) {
+                return;
+            }
+
+            const height = canvas.parentElement.clientHeight || 300;
+            const ratio = window.devicePixelRatio || 1;
+
+            canvas.width = Math.round(width * ratio);
+            canvas.height = Math.round(height * ratio);
+
+            const ctx = canvas.getContext("2d");
+
+            ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+            ctx.clearRect(0, 0, width, height);
+
+            const hasPayments = values.some(function (value) {
+                return value > 0;
+            });
+
+            if (emptyMessage) {
+                emptyMessage.style.display = hasPayments ? "none" : "block";
+            }
+
+            const left = width < 420 ? 58 : 82;
+            const right = 14;
+            const top = 24;
+            const bottom = 48;
+
+            const chartWidth = Math.max(1, width - left - right);
+            const chartHeight = Math.max(1, height - top - bottom);
+
+            const maxValue = Math.max.apply(null, values.concat([1]));
+            const magnitude = Math.pow(
+                10,
+                Math.floor(Math.log10(maxValue))
+            );
+            const maxAxis = Math.ceil(maxValue / magnitude) * magnitude;
+            const gridLines = 4;
+
+            ctx.font = "11px sans-serif";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "right";
+
+            for (let i = 0; i <= gridLines; i++) {
+                const value = maxAxis * i / gridLines;
+                const y = top + chartHeight -
+                    chartHeight * i / gridLines;
+
+                ctx.beginPath();
+                ctx.moveTo(left, y);
+                ctx.lineTo(width - right, y);
+                ctx.strokeStyle = "#e5eaf1";
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                ctx.fillStyle = "#64748b";
+                ctx.fillText(
+                    new Intl.NumberFormat("fr-FR", {
+                        notation: "compact",
+                        maximumFractionDigits: 1
+                    }).format(value),
+                    left - 8,
+                    y
+                );
+            }
+
+            const slot = chartWidth / Math.max(labels.length, 1);
+            const barWidth = Math.min(42, slot * 0.58);
+
+            labels.forEach(function (label, index) {
+                const value = values[index] || 0;
+                const barHeight = value / maxAxis * chartHeight;
+
+                const x = left + slot * index +
+                    (slot - barWidth) / 2;
+                const y = top + chartHeight - barHeight;
+
+                ctx.fillStyle = "#2563eb";
+
+                if (barHeight > 0) {
+                    const radius = Math.min(5, barWidth / 2, barHeight / 2);
+
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + radius);
+                    ctx.arcTo(
+                        x, y,
+                        x + radius, y,
+                        radius
+                    );
+                    ctx.arcTo(
+                        x + barWidth, y,
+                        x + barWidth, y + radius,
+                        radius
+                    );
+                    ctx.lineTo(x + barWidth, top + chartHeight);
+                    ctx.lineTo(x, top + chartHeight);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+
+                ctx.fillStyle = "#475569";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "top";
+                ctx.font = width < 420
+                    ? "10px sans-serif"
+                    : "11px sans-serif";
+
+                ctx.fillText(
+                    label,
+                    left + slot * index + slot / 2,
+                    top + chartHeight + 12
+                );
+
+                if (value > 0 && slot >= 45) {
+                    ctx.fillStyle = "#1e293b";
+                    ctx.font = "10px sans-serif";
+                    ctx.fillText(
+                        new Intl.NumberFormat("fr-FR", {
+                            notation: "compact",
+                            maximumFractionDigits: 1
+                        }).format(value),
+                        x + barWidth / 2,
+                        Math.max(top + 2, y - 10)
+                    );
+                }
+            });
+        }
+
+        drawChart();
+
+        let resizeTimeout;
+
+        window.addEventListener("resize", function () {
+            window.clearTimeout(resizeTimeout);
+            resizeTimeout = window.setTimeout(drawChart, 100);
+        });
+    })();
+    </script>
+    {% endif %}
+
+    <div class="dashboard-columns">
+
+        {% if can_view_members %}
+        <section class="dashboard-panel">
+            <h2>Derniers membres ajoutés</h2>
+            <p class="dashboard-panel-subtitle">
+                Les cinq inscriptions les plus récentes.
+            </p>
+
+            {% if recent_members %}
+                <ul class="dashboard-list">
+                    {% for member in recent_members %}
+                        <li>
+                            <div class="dashboard-item-title">
+                                {{ member.first_name }} {{ member.last_name }}
+                            </div>
+
+                            <div class="dashboard-item-detail">
+                                {{ member.email|default:"Aucun e-mail" }}
+                                · {{ member.get_status_display }}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="dashboard-empty">
+                    Aucun membre enregistré pour le moment.
+                </p>
+            {% endif %}
+
+            <div class="dashboard-links">
+                <a href="{% url 'member_list' %}">
+                    Voir les membres
+                </a>
+                <a href="{% url 'member_create' %}">
+                    Ajouter un membre
+                </a>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if can_view_finances %}
+        <section class="dashboard-panel">
+            <h2>Derniers paiements</h2>
+            <p class="dashboard-panel-subtitle">
+                Les cinq paiements les plus récents.
+            </p>
+
+            {% if recent_payments %}
+                <ul class="dashboard-list">
+                    {% for payment in recent_payments %}
+                        <li>
+                            <div class="dashboard-item-title">
+                                {{ payment.contribution.member.first_name }}
+                                {{ payment.contribution.member.last_name }}
+                            </div>
+
+                            <div class="dashboard-item-detail">
+                                {{ payment.contribution.title }}
+                                · {{ payment.payment_date|date:"d/m/Y" }}
+                            </div>
+
+                            <div class="dashboard-payment-amount">
+                                + {{ payment.amount|floatformat:0 }} Ar
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="dashboard-empty">
+                    Aucun paiement enregistré pour le moment.
+                </p>
+            {% endif %}
+
+            <div class="dashboard-links">
+                <a href="{% url 'contribution_list' %}">
+                    Voir les cotisations
+                </a>
+            </div>
+        </section>
+        {% endif %}
+
+    </div>
+
+    {% if can_view_events %}
+    <section class="dashboard-panel">
+        <h2>Prochains événements</h2>
+        <p class="dashboard-panel-subtitle">
+            Les activités programmées de l'association.
+        </p>
+
+        {% if next_events %}
+            <ul class="dashboard-list">
+                {% for event in next_events %}
+                    <li>
+                        <div class="dashboard-item-title">
+                            {{ event.title }}
+                        </div>
+
+                        <div class="dashboard-item-detail dashboard-event-date">
+                            {{ event.date|date:"d/m/Y à H:i" }}
+                        </div>
+
+                        <div class="dashboard-item-detail">
+                            Lieu : {{ event.location }}
+                        </div>
+
+                        <div class="dashboard-item-detail">
+                            Responsable : {{ event.responsible }}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="dashboard-empty">
+                Aucun événement à venir.
+            </p>
+        {% endif %}
+
+        <div class="dashboard-links">
+            <a href="{% url 'events_list' %}">
+                Voir les événements
+            </a>
+        </div>
+    </section>
+    {% endif %}
+
+</div>
+{% endblock %}
