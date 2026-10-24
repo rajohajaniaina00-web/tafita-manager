@@ -154,3 +154,24 @@ DEFAULT_FROM_EMAIL = os.environ.get(
     "DJANGO_DEFAULT_FROM_EMAIL", "webmaster@localhost"
 )
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+
+# TAFITA_TEMP_MEMBERS_DIAGNOSTICS
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "tafita_console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "tafita.members_500": {
+            "handlers": ["tafita_console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
+
+from . import diagnostics as _tafita_diagnostics
