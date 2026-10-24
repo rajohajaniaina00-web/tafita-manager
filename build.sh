@@ -41,7 +41,16 @@ if user is None:
     user.save()
     print("Compte administrateur créé.")
 elif getattr(user, "is_staff", False) and getattr(user, "is_superuser", False):
-    print("Le compte administrateur existe déjà ; mot de passe inchangé.")
+    reset_password = (
+        os.environ.get("TAFITA_BOOTSTRAP_ADMIN_RESET_PASSWORD", "")
+        .strip().lower() in {"1", "true", "yes"}
+    )
+    if reset_password:
+        user.set_password(password)
+        user.save(update_fields=["password"])
+        print("Mot de passe du compte administrateur réinitialisé.")
+    else:
+        print("Le compte administrateur existe déjà ; mot de passe inchangé.")
 else:
     raise SystemExit(
         "Ce nom existe déjà pour un compte non administrateur. "
