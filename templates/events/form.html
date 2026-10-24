@@ -186,7 +186,7 @@
 {% block content %}
 <div class="page-intro">
     <div>
-        <h1>Ajouter un événement</h1>
+        <h1>{% if editing %}Modifier l’événement{% else %}Ajouter un événement{% endif %}</h1>
         <p>Renseignez les informations de la prochaine activité.</p>
     </div>
 </div>

@@ -1,0 +1,263 @@
+/* TaFiTa Communauté : menu épuré et responsive sur tous les écrans. */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+body.community-page {
+  margin: 0 !important;
+  overflow-x: hidden;
+}
+
+body.community-page *,
+body.community-page *::before,
+body.community-page *::after {
+  box-sizing: border-box;
+}
+
+.community-page .community-layout {
+  display: grid !important;
+  grid-template-columns: clamp(226px, 18vw, 270px) minmax(0, 1fr) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  min-height: 100vh;
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 0 !important;
+}
+
+.community-page .community-sidebar {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  position: sticky !important;
+  top: 0 !important;
+  left: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+.community-page .community-main {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  inset: auto !important;
+  float: none !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+  overflow-x: clip;
+}
+
+.community-page .community-topbar,
+.community-page .community-content,
+.community-page .community-footer {
+  width: 100% !important;
+  min-width: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.community-page .community-content {
+  flex: 1;
+  max-width: 1840px !important;
+  padding: clamp(18px, 2.4vw, 36px) !important;
+  overflow-wrap: anywhere;
+}
+
+.community-page .community-content>*,
+.community-page .community-content img,
+.community-page .community-content video,
+.community-page .community-content iframe {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.community-page .community-nav-link {
+  min-width: 0;
+}
+
+.community-page .community-nav-link span:not(:last-child) {
+  flex: 0 0 20px;
+}
+
+.community-page .community-nav-link {
+  overflow-wrap: anywhere;
+}
+
+.community-page .community-nav-link .nav-external {
+  margin-left: auto;
+}
+
+@media (min-width: 1800px) {
+  .community-page .community-layout {
+    grid-template-columns: 280px minmax(0, 1fr) !important;
+  }
+
+  .community-page .community-content {
+    padding: 38px clamp(34px, 3vw, 58px) !important;
+  }
+}
+
+@media (max-width: 1180px) and (min-width: 901px) {
+  .community-page .community-layout {
+    grid-template-columns: 226px minmax(0, 1fr) !important;
+  }
+
+  .community-page .community-content {
+    padding: 21px !important;
+  }
+
+  .community-page .community-sidebar {
+    padding-left: 13px !important;
+    padding-right: 13px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .community-page .community-layout {
+    display: block !important;
+  }
+
+  .community-page .community-sidebar {
+    position: fixed !important;
+    z-index: 1000 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    width: min(290px, 86vw) !important;
+    max-width: 86vw !important;
+    height: 100dvh !important;
+    min-height: 0 !important;
+    transform: translateX(-105%) !important;
+    transition: transform .24s ease !important;
+  }
+
+  .community-page .community-sidebar.sidebar-open {
+    transform: translateX(0) !important;
+  }
+
+  .community-page .community-main {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .community-page .mobile-nav-toggle {
+    display: grid !important;
+  }
+
+  .community-page .community-content {
+    padding: 21px 17px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .community-page .community-content {
+    padding: 15px 12px 23px !important;
+  }
+
+  .community-page .community-topbar {
+    padding: 11px 13px !important;
+    gap: 10px !important;
+  }
+
+  .community-page .topbar-title {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .community-page .topbar-title strong {
+    font-size: 14px !important;
+    overflow-wrap: anywhere;
+  }
+
+  .community-page .community-footer {
+    flex-wrap: wrap;
+    padding: 14px 12px !important;
+  }
+
+  .community-page .feed-layout,
+  .community-page .two-panel-layout,
+  .community-page .discussion-layout,
+  .community-page .profile-layout,
+  .community-page .payment-review-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .community-page .chat-composer {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .community-page .chat-composer input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .community-page .chat-composer .button {
+    width: 100%;
+  }
+
+  .community-page table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .community-page *,
+  .community-page *::before,
+  .community-page *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+  }
+}
+
+/* Corriger l'affichage des libellés du menu TaFiTa */
+.community-page .community-nav>a.community-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.community-page .community-nav>a.community-nav-link .nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 32px;
+  width: 32px;
+  white-space: nowrap;
+}
+
+.community-page .community-nav>a.community-nav-link .nav-label {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

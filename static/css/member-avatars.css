@@ -1,0 +1,76 @@
+
+.avatar-photo { display: inline-block !important; object-fit: cover; object-position: center; padding: 0 !important; overflow: hidden; flex: 0 0 auto; vertical-align: middle; background: #e9f1fb; }
+.sidebar-user-avatar.avatar-photo, .user-avatar.avatar-photo { border-radius: 50%; width: 40px; height: 40px; min-width: 40px; }
+.avatar.avatar-photo { border-radius: 50%; }
+.avatar-small.avatar-photo { width: 34px; height: 34px; min-width: 34px; }
+.avatar-tiny.avatar-photo { width: 26px; height: 26px; min-width: 26px; }
+.profile-avatar-img { display: block; object-fit: cover; object-position: center; width: 112px; height: 112px; border-radius: 50%; background: #e8eef8; color: #1b2d48; overflow: hidden; }
+@media (max-width: 600px) { .sidebar-user-avatar.avatar-photo, .user-avatar.avatar-photo { width: 36px; height: 36px; min-width: 36px; } }
+
+
+.avatar-photo {
+    display: block;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: center 35%;
+    overflow: hidden;
+    max-width: none;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+
+.profile-avatar-frame {
+    flex: 0 0 124px;
+    width: 124px;
+    height: 124px;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.profile-avatar-frame .profile-avatar-img {
+    display: block;
+    flex: 0 0 auto;
+    width: 112px;
+    height: 112px;
+    min-width: 112px;
+    max-width: none;
+    aspect-ratio: 1 / 1;
+    box-sizing: border-box;
+    object-fit: cover;
+    object-position: center 35%;
+    border-radius: 50%;
+}
+
+
+.avatar-small.avatar-photo {
+    width: 34px;
+    height: 34px;
+}
+
+.avatar-tiny.avatar-photo {
+    width: 26px;
+    height: 26px;
+}
+
+.sidebar-user-avatar.avatar-photo,
+.user-avatar.avatar-photo {
+    width: 40px;
+    height: 40px;
+}
+
+
+@media (max-width: 560px) {
+    .profile-avatar-frame {
+        flex-basis: 92px;
+        width: 92px;
+        height: 92px;
+    }
+
+    .profile-avatar-frame .profile-avatar-img {
+        width: 80px;
+        height: 80px;
+        min-width: 80px;
+    }
+}

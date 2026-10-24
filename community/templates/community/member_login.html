@@ -1,0 +1,23 @@
+{% extends "community/auth_base.html" %}
+{% block title %}Connexion membre | TaFiTa{% endblock %}
+{% block auth_content %}
+<div class="auth-heading">
+  <span class="eyebrow">BON RETOUR</span>
+  <h1>Connectez-vous</h1>
+  <p>Retrouvez l’actualité, les événements et les discussions de l’association.</p>
+</div>
+<form method="post" class="auth-form">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+  {% for field in form %}
+    <div class="field-wrap">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.errors %}<div class="field-errors">{{ field.errors }}</div>{% endif %}
+    </div>
+  {% endfor %}
+  <button class="button button-primary button-wide" type="submit">Se connecter <span aria-hidden="true">→</span></button>
+</form>
+<div class="auth-links"><span>Pas encore de compte ?</span> <a href="{% url 'member_register' %}">Créer mon compte</a></div>
+<div class="auth-admin-link"><a href="{% url 'login' %}">Accès réservé à l’administration</a></div>
+{% endblock %}

@@ -1,95 +1,16 @@
-
-{% load static %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion | TaFiTa Manager</title>
-    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
-</head>
-<body>
-    <main class="auth-layout">
-        <section class="brand-panel">
-            <a class="brand" href="#">
-                <span class="brand-mark">T</span>
-                <span>TaFiTa<span class="brand-light"> Manager</span></span>
-            </a>
-
-            <div class="brand-content">
-                <span class="eyebrow">GESTION ASSOCIATIVE</span>
-                <h1>Ensemble, faisons grandir nos projets.</h1>
-                <p>
-                    Gérez vos membres, organisez vos événements
-                    et suivez les cotisations depuis un seul espace.
-                </p>
-            </div>
-
-            <p class="brand-footer">Une organisation plus simple, chaque jour.</p>
-        </section>
-
-        <section class="form-panel">
-            <div class="login-card">
-                <div class="mobile-brand">TaFiTa Manager</div>
-
-                <span class="eyebrow">BON RETOUR</span>
-                <h2>Connexion</h2>
-                <p class="subtitle">Connectez-vous pour accéder à votre espace.</p>
-
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="notice">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-
-                <form method="post" id="login-form">
-                    {% csrf_token %}
-
-                    <div class="field">
-                        <label for="username">Nom d’utilisateur</label>
-                        <input
-                            id="username"
-                            name="username"
-                            type="text"
-                            placeholder="Entrez votre identifiant"
-                            autocomplete="username"
-                            required
-                        >
-                    </div>
-
-                    <div class="field">
-                        <label for="password">Mot de passe</label>
-                        <div class="password-wrapper">
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                placeholder="Entrez votre mot de passe"
-                                autocomplete="current-password"
-                                required
-                            >
-                            <button
-                                type="button"
-                                class="password-toggle"
-                                id="toggle-password"
-                                aria-label="Afficher le mot de passe"
-                            >Afficher</button>
-                        </div>
-                    </div>
-
-                    <button class="submit-button" type="submit">
-                        Se connecter <span aria-hidden="true">→</span>
-                    </button>
-                </form>
-
-                <p class="security-note">
-                    <span aria-hidden="true">●</span>
-                    Accès sécurisé à votre espace de gestion
-                </p>
-            </div>
-        </section>
-    </main>
-
-    <script src="{% static 'js/auth.js' %}"></script>
-</body>
-</html>
+{% extends "community/auth_base.html" %}
+{% block title %}Administration | TaFiTa Manager{% endblock %}
+{% block auth_content %}
+<div class="auth-heading">
+  <span class="eyebrow">ESPACE SÉCURISÉ</span>
+  <h1>Connexion administration</h1>
+  <p>Accès réservé aux responsables et administrateurs de TaFiTa.</p>
+</div>
+<form method="post" class="auth-form">
+  {% csrf_token %}
+  <div class="field-wrap"><label for="username">Nom d’utilisateur</label><input id="username" type="text" name="username" autocomplete="username" required autofocus></div>
+  <div class="field-wrap"><label for="password">Mot de passe</label><input id="password" type="password" name="password" autocomplete="current-password" required></div>
+  <button class="button button-primary button-wide" type="submit">Se connecter <span aria-hidden="true">→</span></button>
+</form>
+<div class="auth-links"><span>Vous êtes membre ?</span> <a href="{% url 'member_login' %}">Accéder à mon espace</a></div>
+{% endblock %}

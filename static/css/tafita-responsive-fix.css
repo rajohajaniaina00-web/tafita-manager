@@ -1,0 +1,297 @@
+/* TaFiTa Manager — final responsive/layout correction.
+   Chargé après app.css, tafita-manager-theme.css et tafita-manager-pages.css.
+   Principal objectif : neutraliser les anciennes marges latérales qui décalent le contenu. */
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+body.tafita-manager-page {
+  margin: 0 !important;
+  overflow-x: hidden;
+}
+
+body.tafita-manager-page *,
+body.tafita-manager-page *::before,
+body.tafita-manager-page *::after {
+  box-sizing: border-box;
+}
+
+.tafita-manager-page .app-layout {
+  display: grid !important;
+  grid-template-columns: clamp(226px, 18vw, 270px) minmax(0, 1fr) !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow-x: clip;
+}
+
+.tafita-manager-page .sidebar {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  position: sticky !important;
+  top: 0 !important;
+  left: auto !important;
+  right: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+.tafita-manager-page .main-area {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  position: relative !important;
+  inset: auto !important;
+  float: none !important;
+  transform: none !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: clip;
+}
+
+.tafita-manager-page .topbar,
+.tafita-manager-page .page-content,
+.tafita-manager-page .app-footer {
+  width: 100% !important;
+  min-width: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.tafita-manager-page .page-content {
+  max-width: 1840px !important;
+  align-self: stretch;
+  padding: clamp(18px, 2.4vw, 36px) !important;
+  overflow-wrap: anywhere;
+}
+
+.tafita-manager-page .page-content>*,
+.tafita-manager-page .page-content .dashboard-page,
+.tafita-manager-page .page-content .dashboard-intro,
+.tafita-manager-page .page-content .dashboard-grid,
+.tafita-manager-page .page-content .dashboard-columns,
+.tafita-manager-page .page-content .dashboard-panel,
+.tafita-manager-page .page-content .page-header,
+.tafita-manager-page .page-content .page-heading,
+.tafita-manager-page .page-content .section-header,
+.tafita-manager-page .page-content .list-header,
+.tafita-manager-page .page-content .members-header,
+.tafita-manager-page .page-content .events-header,
+.tafita-manager-page .page-content .contributions-header,
+.tafita-manager-page .page-content .form-container,
+.tafita-manager-page .page-content .form-wrapper,
+.tafita-manager-page .page-content .form-card,
+.tafita-manager-page .page-content .form-panel,
+.tafita-manager-page .page-content .table-container,
+.tafita-manager-page .page-content .table-responsive {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Les tableaux restent lisibles sans étirer toute la page. */
+.tafita-manager-page .page-content .table-responsive,
+.tafita-manager-page .page-content .table-container,
+.tafita-manager-page .page-content .responsive-table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tafita-manager-page .page-content .table-responsive table,
+.tafita-manager-page .page-content .table-container table,
+.tafita-manager-page .page-content .responsive-table table {
+  max-width: 100%;
+}
+
+.tafita-manager-page .page-content img,
+.tafita-manager-page .page-content video,
+.tafita-manager-page .page-content iframe {
+  max-width: 100%;
+}
+
+.tafita-manager-page .page-content form {
+  min-width: 0;
+}
+
+.tafita-manager-page .page-content input,
+.tafita-manager-page .page-content select,
+.tafita-manager-page .page-content textarea {
+  min-width: 0;
+}
+
+@media (min-width: 1800px) {
+  .tafita-manager-page .app-layout {
+    grid-template-columns: 280px minmax(0, 1fr) !important;
+  }
+
+  .tafita-manager-page .page-content {
+    padding: 38px clamp(34px, 3vw, 58px) !important;
+  }
+}
+
+@media (max-width: 1180px) and (min-width: 901px) {
+  .tafita-manager-page .app-layout {
+    grid-template-columns: 226px minmax(0, 1fr) !important;
+  }
+
+  .tafita-manager-page .page-content {
+    padding: 22px !important;
+  }
+
+  .tafita-manager-page .sidebar {
+    padding-left: 13px !important;
+    padding-right: 13px !important;
+  }
+
+  .tafita-manager-page .nav-link {
+    gap: 9px;
+  }
+}
+
+@media (max-width: 900px) {
+  .tafita-manager-page .app-layout {
+    display: block !important;
+    width: 100% !important;
+    min-height: 100vh;
+    overflow-x: clip;
+  }
+
+  .tafita-manager-page .sidebar {
+    position: fixed !important;
+    z-index: 1000 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    width: min(290px, 86vw) !important;
+    max-width: 86vw !important;
+    height: 100dvh !important;
+    min-height: 0 !important;
+    transform: translateX(-105%) !important;
+    transition: transform .24s ease !important;
+  }
+
+  .tafita-manager-page .sidebar.open,
+  .tafita-manager-page .sidebar.sidebar-open,
+  .tafita-manager-page .sidebar.active,
+  .tafita-manager-page .sidebar.is-open,
+  .tafita-manager-page .app-layout.sidebar-open .sidebar {
+    transform: translateX(0) !important;
+  }
+
+  .tafita-manager-page .main-area {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    left: auto !important;
+    transform: none !important;
+  }
+
+  .tafita-manager-page .menu-toggle {
+    display: inline-grid !important;
+  }
+
+  .tafita-manager-page .page-content {
+    padding: 20px 17px 26px !important;
+  }
+
+  .tafita-manager-page .topbar {
+    padding: 13px 17px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .tafita-manager-page .topbar {
+    gap: 9px !important;
+    padding: 11px 12px !important;
+  }
+
+  .tafita-manager-page .topbar-context {
+    flex: 1;
+  }
+
+  .tafita-manager-page .topbar-context strong {
+    font-size: 14px !important;
+    overflow-wrap: anywhere;
+  }
+
+  .tafita-manager-page .topbar-user {
+    margin-left: auto;
+  }
+
+  .tafita-manager-page .user-info,
+  .tafita-manager-page .topbar-online-dot {
+    display: none !important;
+  }
+
+  .tafita-manager-page .page-content {
+    padding: 15px 12px 22px !important;
+  }
+
+  .tafita-manager-page .page-content .dashboard-page .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .tafita-manager-page .page-content .dashboard-page .dashboard-columns {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .tafita-manager-page .page-content .dashboard-intro,
+  .tafita-manager-page .page-content .page-header,
+  .tafita-manager-page .page-content .section-header,
+  .tafita-manager-page .page-content .list-header,
+  .tafita-manager-page .page-content .form-header {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .tafita-manager-page .page-content .form-actions,
+  .tafita-manager-page .page-content .form-buttons,
+  .tafita-manager-page .page-content .actions-row,
+  .tafita-manager-page .page-content .form-submit-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+  }
+
+  .tafita-manager-page .page-content .form-actions>*,
+  .tafita-manager-page .page-content .form-buttons>*,
+  .tafita-manager-page .page-content .actions-row>*,
+  .tafita-manager-page .page-content .form-submit-row>* {
+    max-width: 100%;
+  }
+
+  .tafita-manager-page .app-footer {
+    flex-wrap: wrap;
+    padding: 14px 12px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .tafita-manager-page *,
+  .tafita-manager-page *::before,
+  .tafita-manager-page *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+  }
+}

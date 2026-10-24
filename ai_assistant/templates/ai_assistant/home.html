@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Assistant IA | TaFiTa Manager{% endblock %}
+{% block page_heading %}Assistant IA{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/ai-assistant.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ta-ai-page">
+    <section class="ta-ai-hero">
+        <div class="ta-ai-orb" aria-hidden="true">✦</div>
+        <div class="ta-ai-hero-copy">
+            <span class="ta-ai-kicker">INTELLIGENCE ASSOCIATIVE</span>
+            <h1>Votre assistant TaFiTa</h1>
+            <p>Analysez les indicateurs, préparez vos annonces et obtenez des idées pour mieux gérer l'association.</p>
+            <div class="ta-ai-badges">
+                <span>● Données actualisées à la demande</span>
+                <span>✦ Réponses en français</span>
+                <span>✓ Validation humaine</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="ta-ai-config-warning" role="status">
+        <strong>Mode local activé — sans clé API</strong>
+        <p>TaFiTa IA utilise les indicateurs de ton association et des règles Python. Les réponses sont générées localement ; cette première version ne dispose pas encore des capacités d'un modèle génératif complet.</p>
+    </div>
+
+    <section class="ta-ai-metrics" aria-label="Indicateurs associatifs">
+        <article class="ta-ai-metric"><span class="ta-ai-metric-icon">♙</span><span class="ta-ai-metric-label">Membres actifs</span><strong>{{ snapshot.members.active }}</strong><small>sur {{ snapshot.members.total }} fiches</small></article>
+        <article class="ta-ai-metric"><span class="ta-ai-metric-icon">▦</span><span class="ta-ai-metric-label">Événements</span><strong>{{ snapshot.events.upcoming_or_ongoing }}</strong><small>à venir ou en cours</small></article>
+        <article class="ta-ai-metric"><span class="ta-ai-metric-icon">Ar</span><span class="ta-ai-metric-label">Paiements enregistrés</span><strong class="ta-ai-metric-money">{{ snapshot.contributions.payments_recorded_ariary }} Ar</strong><small>total enregistré</small></article>
+        <article class="ta-ai-metric"><span class="ta-ai-metric-icon">◷</span><span class="ta-ai-metric-label">Cotisations en retard</span><strong>{{ snapshot.contributions.overdue_contributions_count }}</strong><small>solde total : {{ snapshot.contributions.overdue_amount_ariary }} Ar</small></article>
+    </section>
+
+    <div class="ta-ai-layout">
+        <section class="ta-ai-panel ta-ai-chat-panel">
+            <div class="ta-ai-panel-heading">
+                <div><span class="ta-ai-kicker">ESPACE DE TRAVAIL</span><h2>Que voulez-vous préparer ?</h2></div>
+                <span class="ta-ai-chip">Mode local</span>
+            </div>
+
+            <form method="post" class="ta-ai-form">
+                {% csrf_token %}
+                <label for="ai-question">Votre demande</label>
+                <textarea id="ai-question" name="question" rows="5" maxlength="1800" placeholder="Ex. : Analyse nos indicateurs et propose trois priorités pour le mois prochain…">{{ question }}</textarea>
+                <div class="ta-ai-form-foot"><span>Ne saisis pas de mot de passe ou de données sensibles.</span><span>1 800 caractères max.</span></div>
+                <button type="submit" class="ta-ai-submit"><span>✦</span> Demander à l'assistant</button>
+            </form>
+
+            {% if answer %}
+            <section class="ta-ai-answer" aria-live="polite">
+                <div class="ta-ai-answer-heading"><span class="ta-ai-answer-icon">✦</span><div><strong>Réponse de l'assistant</strong><small>À vérifier avant toute action</small></div></div>
+                <div class="ta-ai-answer-content" style="white-space: pre-line">{{ answer }}</div>
+                <button type="button" class="ta-ai-copy" id="copyAiAnswer">Copier la réponse</button>
+            </section>
+            {% endif %}
+        </section>
+
+        <aside class="ta-ai-panel ta-ai-suggestions">
+            <span class="ta-ai-kicker">RACCOURCIS INTELLIGENTS</span>
+            <h2>Suggestions</h2>
+            <p class="ta-ai-muted">Choisissez un objectif pour démarrer rapidement.</p>
+
+            <form method="post" class="ta-ai-preset-form">{% csrf_token %}<button name="preset" value="summary"><span class="ta-ai-preset-icon">▤</span><span><strong>Résumé de l'association</strong><small>Comprendre la situation générale</small></span><span class="ta-ai-arrow">↗</span></button></form>
+            <form method="post" class="ta-ai-preset-form">{% csrf_token %}<button name="preset" value="overdue"><span class="ta-ai-preset-icon">◷</span><span><strong>Suivi des cotisations</strong><small>Analyser les retards et suggérer un suivi</small></span><span class="ta-ai-arrow">↗</span></button></form>
+            <form method="post" class="ta-ai-preset-form">{% csrf_token %}<button name="preset" value="event_draft"><span class="ta-ai-preset-icon">▦</span><span><strong>Préparer un événement</strong><small>Créer un brouillon d'annonce</small></span><span class="ta-ai-arrow">↗</span></button></form>
+            <form method="post" class="ta-ai-preset-form">{% csrf_token %}<button name="preset" value="announcement"><span class="ta-ai-preset-icon">✎</span><span><strong>Rédiger une annonce</strong><small>Un message clair pour les membres</small></span><span class="ta-ai-arrow">↗</span></button></form>
+            <form method="post" class="ta-ai-preset-form">{% csrf_token %}<button name="preset" value="action_plan"><span class="ta-ai-preset-icon">⌁</span><span><strong>Plan d'action</strong><small>Prioriser les prochaines tâches</small></span><span class="ta-ai-arrow">↗</span></button></form>
+
+            <div class="ta-ai-privacy-note"><span>♢</span><p>L'IA reçoit des indicateurs agrégés, pas les noms ou coordonnées des membres. Elle ne peut pas effectuer de modifications dans la base de données.</p></div>
+        </aside>
+    </div>
+
+    <p class="ta-ai-footnote">Indicateurs calculés le {{ snapshot.as_of }}. Les réponses de l'IA peuvent contenir des erreurs : vérifiez les chiffres et les propositions avant de prendre une décision.</p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    const button = document.getElementById('copyAiAnswer');
+    const answer = document.querySelector('.ta-ai-answer-content');
+    if (button && answer) {
+        button.addEventListener('click', async function () {
+            try {
+                await navigator.clipboard.writeText(answer.innerText);
+                button.textContent = 'Réponse copiée';
+            } catch (e) {
+                button.textContent = 'Copie indisponible';
+            }
+        });
+    }
+})();
+</script>
+{% endblock %}

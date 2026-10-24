@@ -1,0 +1,15 @@
+{% extends "community/base_member.html" %}
+{% block title %}Discussions | TaFiTa{% endblock %}
+{% block page_heading %}Discussions{% endblock %}
+{% block content %}
+<div class="page-intro"><div><span class="eyebrow">RESTER EN CONTACT</span><h1>Vos discussions</h1><p>Échangez avec les membres et l’équipe TaFiTa.</p></div></div>
+<div class="discussion-layout">
+  <section class="surface conversation-list-panel"><div class="section-heading-inline"><div><span class="eyebrow">MESSAGERIE</span><h2>Conversations</h2></div></div>
+  {% for row in conversation_rows %}<a class="conversation-row" href="{% url 'community_conversation' row.conversation.id %}"><span class="conversation-avatar {% if row.conversation.kind == 'general' %}conversation-avatar-general{% endif %}">{% if row.conversation.kind == 'general' %}✦{% elif row.conversation.kind == 'group' %}♧{% else %}◉{% endif %}</span><span class="conversation-row-copy"><strong>{{ row.display_title }}</strong><small>{% if row.conversation.kind == 'general' %}Tous les membres et administrateurs{% elif row.conversation.kind == 'group' %}Discussion de groupe{% else %}Conversation privée{% endif %}</small><small>{{ row.conversation.last_activity|date:"d/m/Y · H:i" }}</small></span><span class="conversation-arrow">→</span></a>{% empty %}<p class="muted-copy">Aucune conversation.</p>{% endfor %}
+  </section>
+  <aside class="discussion-side-column">
+    <section class="surface create-group-panel"><span class="eyebrow">CRÉER UN ESPACE</span><h2>Nouveau groupe</h2><form method="post" action="{% url 'community_create_group' %}" class="stack-form">{% csrf_token %}<label for="id_title">Nom du groupe</label>{{ group_form.title }}<label for="id_participants">Participants</label>{{ group_form.participants }}<small>Sur Mac, maintenez ⌘ pour sélectionner plusieurs personnes ; sur Windows, Ctrl.</small><button type="submit" class="button button-primary">Créer le groupe</button></form></section>
+    <section class="surface contacts-panel"><span class="eyebrow">MEMBRES</span><h2>Démarrer une discussion</h2>{% for contact in contacts %}<form method="post" action="{% url 'community_start_direct' contact.id %}" class="contact-row">{% csrf_token %}{% include "community/includes/avatar.html" with avatar_user=contact avatar_size="avatar-small" only %}<span class="contact-name"><strong>{{ contact.get_full_name|default:contact.username }}</strong><small>{% if contact.is_staff or contact.is_superuser %}Administration{% else %}Membre TaFiTa{% endif %}</small></span><button type="submit" aria-label="Écrire à {{ contact.username }}">→</button></form>{% empty %}<p class="muted-copy">Aucun autre participant disponible.</p>{% endfor %}</section>
+  </aside>
+</div>
+{% endblock %}

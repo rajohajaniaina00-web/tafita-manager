@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
+from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
@@ -122,11 +123,34 @@ def payment_create(request, pk):
 @permission_required("contributions.delete_payment", raise_exception=True)
 @require_POST
 def payment_delete(request, pk):
-    payment = get_object_or_404(
-        Payment.objects.select_related("contribution"),
-        pk=pk,
-    )
-    payment.delete()
+    reason = request.POST.get("reason", "").strip()[:300]
+    if not reason:
+        messages.error(
+            request,
+            "Le motif d'annulation est obligatoire. Aucun changement n'a été effectué.",
+        )
+        return redirect("contribution_list")
 
-    messages.success(request, "Le paiement a été supprimé.")
+    with transaction.atomic():
+        payment = get_object_or_404(
+            Payment.objects.select_for_update().select_related("contribution"),
+            pk=pk,
+        )
+
+        if payment.is_voided:
+            messages.info(request, "Ce paiement est déjà annulé.")
+            return redirect("contribution_list")
+
+        payment.is_voided = True
+        payment.voided_at = timezone.now()
+        payment.voided_by = request.user
+        payment.void_reason = reason
+        payment.save(update_fields=[
+            "is_voided", "voided_at", "voided_by", "void_reason"
+        ])
+
+    messages.success(
+        request,
+        "Paiement annulé. Son enregistrement et son historique sont conservés.",
+    )
     return redirect("contribution_list")

@@ -1,0 +1,6 @@
+{% extends "community/base_member.html" %}
+{% block title %}Profil indisponible | TaFiTa{% endblock %}
+{% block page_heading %}Mon profil{% endblock %}
+{% block content %}
+<section class="profile-unlinked-card"><div class="profile-unlinked-mark">T</div>{% if inactive %}<h1>Compte membre inactif</h1><p>Votre fiche membre est désactivée. Contactez l’administration de TaFiTa pour obtenir de l’aide.</p>{% else %}<h1>Votre compte n’est pas associé à une fiche membre</h1><p>Un administrateur doit associer votre compte à votre fiche membre avant que vous puissiez ajouter une photo de profil.</p>{% endif %}<a class="profile-primary-button" href="{% url 'community_feed' %}">Retour à la communauté</a></section>
+{% endblock %}

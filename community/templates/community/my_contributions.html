@@ -1,0 +1,294 @@
+
+{% extends "community/base_member.html" %}
+{% load static %}
+
+{% block title %}Mes cotisations | TaFiTa{% endblock %}
+{% block page_heading %}Mes cotisations{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/member-contributions.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="contributions-page">
+
+    <!-- INTRODUCTION -->
+    <header class="page-intro">
+        <div>
+            <span class="eyebrow">SUIVI FINANCIER PERSONNEL</span>
+            <h1>Mes cotisations</h1>
+            <p>
+                Consultez les cotisations qui vous sont attribuées,
+                suivez vos paiements et transmettez vos justificatifs.
+                Chaque déclaration est vérifiée par l'administration
+                avant d'être comptabilisée.
+            </p>
+        </div>
+    </header>
+
+    <!-- LISTE DES COTISATIONS -->
+    <section class="surface settings-panel">
+        <div class="section-heading-inline">
+            <div>
+                <span class="eyebrow">VOTRE SITUATION</span>
+                <h2>Mes cotisations</h2>
+                <p class="muted-copy">
+                    Retrouvez ici les montants attendus et les soldes restants.
+                </p>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="clean-table">
+                <thead>
+                    <tr>
+                        <th>Cotisation</th>
+                        <th>Montant attendu</th>
+                        <th>Déjà payé</th>
+                        <th>Solde restant</th>
+                        <th>Échéance</th>
+                        <th>État</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for contribution in contributions %}
+                    <tr>
+                        <td>
+                            <strong>{{ contribution.title }}</strong>
+                            {% if contribution.description %}
+                                <br>
+                                <small class="muted-copy">
+                                    {{ contribution.description|truncatewords:12 }}
+                                </small>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ contribution.amount }} Ar</td>
+                        <td>{{ contribution.total_paid }} Ar</td>
+                        <td>
+                            <strong>
+                                {{ contribution.remaining_amount }} Ar
+                            </strong>
+                        </td>
+
+                        <td>
+                            {% if contribution.due_date %}
+                                {{ contribution.due_date|date:"d/m/Y" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <span class="status status-{{ contribution.current_status }}">
+                                {{ contribution.current_status_display }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {% if contribution.remaining_amount > 0 %}
+                                <a class="button button-primary"
+                                   href="#payment-form-{{ contribution.id }}">
+                                    Déclarer un paiement
+                                </a>
+                            {% else %}
+                                <span class="status status-paid">
+                                    Réglée
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <h3>Aucune cotisation disponible</h3>
+                                <p>
+                                    Les cotisations qui vous seront attribuées
+                                    apparaîtront ici.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- FORMULAIRES DE DÉCLARATION -->
+    <section class="contributions-payment-section">
+        <header class="page-intro">
+            <div>
+                <span class="eyebrow">RÈGLEMENTS</span>
+                <h2>Déclarer un paiement</h2>
+                <p>
+                    Sélectionnez une cotisation et renseignez les informations
+                    de votre règlement. Ne transmettez pas plusieurs fois
+                    une même déclaration.
+                </p>
+            </div>
+        </header>
+
+        <div class="two-panel-layout payment-form-grid">
+
+            {% for contribution in contributions %}
+                {% if contribution.remaining_amount > 0 %}
+
+                <section class="surface settings-panel payment-card"
+                         id="payment-form-{{ contribution.id }}">
+
+                    <span class="eyebrow">DÉCLARATION DE PAIEMENT</span>
+
+                    <h2>{{ contribution.title }}</h2>
+
+                    <p class="muted-copy">
+                        Montant restant à régler :
+                        <strong>{{ contribution.remaining_amount }} Ar</strong>
+                    </p>
+
+                    <form method="post"
+                          enctype="multipart/form-data"
+                          action="{% url 'community_submit_payment' contribution.id %}"
+                          class="stack-form">
+
+                        {% csrf_token %}
+
+                        <label for="amount-{{ contribution.id }}">
+                            Montant versé (Ar)
+                        </label>
+
+                        <input
+                            id="amount-{{ contribution.id }}"
+                            type="number"
+                            name="amount"
+                            min="1"
+                            max="{{ contribution.remaining_amount }}"
+                            step="1"
+                            required>
+
+                        <label for="method-{{ contribution.id }}">
+                            Mode de paiement
+                        </label>
+
+                        <select
+                            id="method-{{ contribution.id }}"
+                            name="method"
+                            required>
+                            <option value="mobile_money">Mobile Money</option>
+                            <option value="cash">Espèces</option>
+                            <option value="bank">Virement bancaire</option>
+                            <option value="other">Autre</option>
+                        </select>
+
+                        <label for="reference-{{ contribution.id }}">
+                            Référence du paiement (facultatif)
+                        </label>
+
+                        <input
+                            id="reference-{{ contribution.id }}"
+                            type="text"
+                            name="reference"
+                            maxlength="100">
+
+                        <label for="proof-{{ contribution.id }}">
+                            Justificatif (facultatif)
+                        </label>
+
+                        <input
+                            id="proof-{{ contribution.id }}"
+                            type="file"
+                            name="proof"
+                            accept=".jpg,.jpeg,.png,.webp,.pdf">
+
+                        <label for="notes-{{ contribution.id }}">
+                            Note complémentaire (facultatif)
+                        </label>
+
+                        <textarea
+                            id="notes-{{ contribution.id }}"
+                            name="notes"
+                            rows="3"
+                            maxlength="500"></textarea>
+
+                        <button class="button button-primary" type="submit">
+                            Envoyer pour vérification
+                        </button>
+
+                    </form>
+                </section>
+
+                {% endif %}
+            {% empty %}
+                <p class="muted-copy">
+                    Aucune cotisation n'est actuellement associée à votre compte.
+                </p>
+            {% endfor %}
+
+        </div>
+    </section>
+
+    <!-- HISTORIQUE DES DÉCLARATIONS -->
+    <section class="surface settings-panel">
+        <div class="section-heading-inline">
+            <div>
+                <span class="eyebrow">HISTORIQUE</span>
+                <h2>Mes déclarations récentes</h2>
+                <p class="muted-copy">
+                    Consultez le statut de vos déclarations de paiement.
+                </p>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="clean-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Cotisation</th>
+                        <th>Montant</th>
+                        <th>Mode</th>
+                        <th>Statut</th>
+                        <th>Motif</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for submission in submissions %}
+                    <tr>
+                        <td>
+                            {{ submission.created_at|date:"d/m/Y H:i" }}
+                        </td>
+
+                        <td>{{ submission.contribution.title }}</td>
+                        <td>{{ submission.amount }} Ar</td>
+                        <td>{{ submission.get_method_display }}</td>
+
+                        <td>
+                            <span class="status status-{{ submission.status }}">
+                                {{ submission.get_status_display }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ submission.rejection_reason|default:"—" }}
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            Aucune déclaration envoyée pour le moment.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+{% endblock %}

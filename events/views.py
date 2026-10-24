@@ -4,10 +4,12 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from .models import Event
+from community.notification_services import notify_active_members
 
 
 @login_required
@@ -63,7 +65,7 @@ def event_create(request):
                         "La date de fin doit être après la date de début.",
                     )
                 else:
-                    Event.objects.create(
+                    event = Event.objects.create(
                         title=title,
                         description=description,
                         date=start,
@@ -71,6 +73,15 @@ def event_create(request):
                         location=location,
                         responsible=responsible,
                         status="planned",
+                    )
+
+                    event_date = timezone.localtime(event.date).strftime("%d/%m/%Y à %H:%M")
+                    notify_active_members(
+                        title=f"Nouvel événement : {event.title}",
+                        message=(f"Une activité est prévue le {event_date} à "
+                                 f"{event.location}. Consultez ses détails dans TaFiTa."),
+                        category="event",
+                        url=reverse("community_event_detail", args=[event.pk]),
                     )
 
                     messages.success(
@@ -99,7 +110,7 @@ def event_create(request):
 @login_required
 @permission_required("events.change_event", raise_exception=True)
 def event_update(request, pk):
-    """Modifier un événement existant."""
+    """Modifier un événement et notifier les membres si nécessaire."""
     event = get_object_or_404(Event, pk=pk)
 
     if request.method == "POST":
@@ -118,44 +129,81 @@ def event_update(request, pk):
             )
         else:
             try:
-                start = datetime.fromisoformat(date)
-                end = datetime.fromisoformat(end_date)
-
+                start_date = datetime.fromisoformat(date)
+                finish_date = datetime.fromisoformat(end_date)
                 current_timezone = timezone.get_current_timezone()
 
-                if timezone.is_naive(start):
-                    start = timezone.make_aware(
-                        start, current_timezone
+                if timezone.is_naive(start_date):
+                    start_date = timezone.make_aware(
+                        start_date, current_timezone
+                    )
+                if timezone.is_naive(finish_date):
+                    finish_date = timezone.make_aware(
+                        finish_date, current_timezone
                     )
 
-                if timezone.is_naive(end):
-                    end = timezone.make_aware(
-                        end, current_timezone
-                    )
-
-                if end <= start:
+                if finish_date <= start_date:
                     messages.error(
                         request,
                         "La date de fin doit être après la date de début.",
                     )
                 else:
+                    was_cancelled = event.status == "cancelled"
+                    new_status = "cancelled" if cancelled else "planned"
+
+                    changed = any([
+                        event.title != title,
+                        event.description != description,
+                        event.date != start_date,
+                        event.end_date != finish_date,
+                        event.location != location,
+                        event.responsible != responsible,
+                        event.status != new_status,
+                    ])
+
                     event.title = title
                     event.description = description
-                    event.date = start
-                    event.end_date = end
+                    event.date = start_date
+                    event.end_date = finish_date
                     event.location = location
                     event.responsible = responsible
-
-                    # Le statut reste manuel uniquement pour l'annulation.
-                    event.status = "cancelled" if cancelled else "planned"
-
+                    event.status = new_status
                     event.save()
+
+                    event_url = reverse(
+                        "community_event_detail",
+                        args=[event.pk],
+                    )
+                    event_date = timezone.localtime(
+                        event.date
+                    ).strftime("%d/%m/%Y à %H:%M")
+
+                    if cancelled and not was_cancelled:
+                        notify_active_members(
+                            title=f"Événement annulé : {event.title}",
+                            message=(
+                                f"L'activité prévue le {event_date} "
+                                f"à {event.location} a été annulée."
+                            ),
+                            category="event",
+                            url=event_url,
+                        )
+                    elif changed and not cancelled:
+                        notify_active_members(
+                            title=f"Événement modifié : {event.title}",
+                            message=(
+                                f"Les informations de l'activité prévue "
+                                f"le {event_date} à {event.location} "
+                                "ont été mises à jour."
+                            ),
+                            category="event",
+                            url=event_url,
+                        )
 
                     messages.success(
                         request,
                         "L'événement a été modifié avec succès.",
                     )
-
                     return redirect("events_list")
 
             except (ValueError, TypeError, OverflowError):
@@ -172,7 +220,6 @@ def event_update(request, pk):
             "editing": True,
         },
     )
-
 
 @login_required
 @permission_required("events.delete_event", raise_exception=True)

@@ -1,0 +1,23 @@
+{% extends "community/auth_base.html" %}
+{% block title %}Créer mon compte | TaFiTa{% endblock %}
+{% block auth_content %}
+<div class="auth-heading">
+  <span class="eyebrow">REJOINDRE LA COMMUNAUTÉ</span>
+  <h1>Créer un compte</h1>
+  <p>Utilisez le code personnel transmis par l’administration TaFiTa. Chaque code ne peut servir qu’une seule fois.</p>
+</div>
+<form method="post" class="auth-form">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+  {% for field in form %}
+    <div class="field-wrap">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+      {% if field.errors %}<div class="field-errors">{{ field.errors }}</div>{% endif %}
+    </div>
+  {% endfor %}
+  <button class="button button-primary button-wide" type="submit">Créer mon compte <span aria-hidden="true">→</span></button>
+</form>
+<div class="auth-links"><span>Vous avez déjà un compte ?</span> <a href="{% url 'member_login' %}">Se connecter</a></div>
+{% endblock %}

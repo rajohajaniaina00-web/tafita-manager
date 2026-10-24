@@ -18,4 +18,5 @@ urlpatterns = [
         views.payment_delete,
         name="payment_delete",
     ),
+
 ]

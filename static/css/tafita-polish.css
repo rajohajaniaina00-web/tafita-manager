@@ -1,0 +1,215 @@
+/* TAFITA_POLISH_V1 — finitions complémentaires du thème administratif */
+.tafita-manager-page {
+  --tm-polish-shadow: 0 12px 30px rgba(17, 38, 68, .065);
+}
+
+.tafita-manager-page .main-area {
+  min-width: 0;
+}
+
+.tafita-manager-page .page-content {
+  padding-bottom: clamp(24px, 4vw, 44px);
+}
+
+.tafita-manager-page .dashboard-intro {
+  padding: clamp(22px, 3vw, 34px);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 92% 12%, rgba(141,224,243,.19), transparent 13rem),
+    linear-gradient(118deg, #111d33, #193a63 68%, #2864ad);
+  box-shadow: 0 14px 34px rgba(17,42,78,.12);
+}
+
+.tafita-manager-page .dashboard-intro h1 {
+  color: #fff;
+  line-height: 1.2;
+}
+
+.tafita-manager-page .dashboard-intro p {
+  color: #d9e7f8;
+  line-height: 1.7;
+}
+
+.tafita-manager-page .dashboard-date {
+  border: 1px solid #d9e8ff;
+  border-radius: 11px;
+  background: #f0f6ff;
+  color: #214fc1;
+}
+
+.tafita-manager-page .dashboard-card,
+.tafita-manager-page .dashboard-panel {
+  border: 1px solid #e3eaf4;
+  border-radius: 17px;
+  box-shadow: var(--tm-polish-shadow);
+}
+
+.tafita-manager-page .dashboard-card {
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+.tafita-manager-page .dashboard-card:hover {
+  transform: translateY(-2px);
+  border-color: #cbdaf0;
+  box-shadow: 0 16px 34px rgba(17,38,68,.09);
+}
+
+.tafita-manager-page .dashboard-number {
+  font-variant-numeric: tabular-nums;
+}
+
+.tafita-manager-page .dashboard-panel h2 {
+  line-height: 1.4;
+}
+
+.tafita-manager-page .dashboard-list li {
+  transition: background .16s ease;
+}
+
+.tafita-manager-page .dashboard-list li:hover {
+  background: #f8fbff;
+}
+
+.tafita-manager-page .dashboard-links a {
+  border: 1px solid #dce8fb;
+  border-radius: 10px;
+  transition: background .16s ease, border-color .16s ease, transform .16s ease;
+}
+
+.tafita-manager-page .dashboard-links a:hover {
+  border-color: #b9d0f7;
+  transform: translateY(-1px);
+}
+
+.tafita-manager-page .page-content a.button,
+.tafita-manager-page .page-content button.button,
+.tafita-manager-page .page-content .ta-ai-submit,
+.tafita-manager-page .page-content .ta-ai-copy {
+  border-radius: 10px;
+  font-weight: 650;
+  transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+
+.tafita-manager-page .page-content a.button:hover,
+.tafita-manager-page .page-content button.button:hover,
+.tafita-manager-page .page-content .ta-ai-submit:hover,
+.tafita-manager-page .page-content .ta-ai-copy:hover {
+  filter: brightness(.98);
+}
+
+.tafita-manager-page .page-content button:focus-visible,
+.tafita-manager-page .page-content a:focus-visible,
+.tafita-manager-page .page-content input:focus-visible,
+.tafita-manager-page .page-content select:focus-visible,
+.tafita-manager-page .page-content textarea:focus-visible {
+  outline: 3px solid rgba(50,104,232,.28);
+  outline-offset: 2px;
+}
+
+.tafita-manager-page .page-content input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+.tafita-manager-page .page-content select,
+.tafita-manager-page .page-content textarea {
+  max-width: 100%;
+  border-color: #d5dfed;
+  border-radius: 10px;
+}
+
+.tafita-manager-page .page-content input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+.tafita-manager-page .page-content select {
+  min-height: 42px;
+}
+
+.tafita-manager-page .page-content input:focus,
+.tafita-manager-page .page-content select:focus,
+.tafita-manager-page .page-content textarea:focus {
+  border-color: #6b95ef;
+  box-shadow: 0 0 0 3px rgba(50,104,232,.10);
+}
+
+.tafita-manager-page .page-content .notice,
+.tafita-manager-page .page-content .message {
+  border-radius: 11px;
+  line-height: 1.6;
+}
+
+.tafita-manager-page .payment-audit {
+  min-width: 180px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid #e0e8f2;
+  border-radius: 11px;
+  background: #f8faff;
+}
+
+.tafita-manager-page .payment-audit summary {
+  cursor: pointer;
+  color: #254a81;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tafita-manager-page .payment-audit-list {
+  margin-top: 10px;
+}
+
+.tafita-manager-page .payment-audit-item {
+  padding: 10px 0;
+  border-top: 1px solid #e5ebf3;
+  overflow-wrap: anywhere;
+}
+
+.tafita-manager-page .payment-audit-item p {
+  margin: 5px 0;
+  font-size: 12px;
+}
+
+.tafita-manager-page .payment-void-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.tafita-manager-page .payment-void-form label {
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.tafita-manager-page .payment-void-form input {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .tafita-manager-page .dashboard-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .tafita-manager-page .page-content {
+    padding: 16px !important;
+  }
+
+  .tafita-manager-page .dashboard-intro {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .tafita-manager-page .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px;
+  }
+
+  .tafita-manager-page .dashboard-card,
+  .tafita-manager-page .dashboard-panel {
+    padding: 16px;
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 390px) {
+  .tafita-manager-page .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

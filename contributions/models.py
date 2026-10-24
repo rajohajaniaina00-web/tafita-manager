@@ -1,3 +1,4 @@
+from django.conf import settings
 
 from django.db import models
 from django.db.models import Sum
@@ -42,7 +43,7 @@ class Contribution(models.Model):
 
     @property
     def total_paid(self):
-        result = self.payments.aggregate(
+        result = self.payments.filter(is_voided=False).aggregate(
             total=Sum("amount")
         )["total"]
         return result or 0
@@ -106,6 +107,24 @@ class Payment(models.Model):
     created_at = models.DateTimeField(
         "Enregistré le",
         auto_now_add=True,
+    )
+
+    is_voided = models.BooleanField(
+        "Annulé", default=False, db_index=True
+    )
+    voided_at = models.DateTimeField(
+        "Annulé le", null=True, blank=True
+    )
+    voided_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="voided_contribution_payments",
+        verbose_name="Annulé par",
+    )
+    void_reason = models.CharField(
+        "Motif d’annulation", max_length=300, blank=True
     )
 
     class Meta:

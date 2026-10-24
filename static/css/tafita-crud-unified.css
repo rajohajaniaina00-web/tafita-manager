@@ -1,0 +1,580 @@
+/*
+ * TaFiTa Manager — Design unifié des listes et formulaires
+ * À charger APRÈS app.css, tafita-manager-theme.css et tafita-manager-pages.css.
+ * CSS seulement : ne modifie pas les vues, permissions, modèles ou données Django.
+ */
+
+.tafita-manager-page {
+  --tm-ink: #14243a;
+  --tm-text: #24364d;
+  --tm-muted: #718097;
+  --tm-line: #e1e9f3;
+  --tm-surface: #ffffff;
+  --tm-soft: #f5f8fc;
+  --tm-cyan: #a9e8f3;
+  --tm-blue: #3268e8;
+  --tm-blue-deep: #1c468c;
+  --tm-green: #167c5a;
+  --tm-green-bg: #e8f8f0;
+  --tm-red: #b42345;
+  --tm-red-bg: #fff0f3;
+  --tm-amber: #946200;
+  --tm-amber-bg: #fff7df;
+}
+
+/* Largeur, alignement et espacement communs */
+.tafita-manager-page .main-area,
+.tafita-manager-page .page-content {
+  min-width: 0;
+  width: 100%;
+}
+
+.tafita-manager-page .page-content {
+  box-sizing: border-box;
+  padding: clamp(16px, 2.4vw, 30px) !important;
+}
+
+.tafita-manager-page .page-content>* {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.tafita-manager-page .page-content h1,
+.tafita-manager-page .page-content h2,
+.tafita-manager-page .page-content h3 {
+  color: var(--tm-ink);
+  letter-spacing: -.035em;
+}
+
+.tafita-manager-page .page-content p {
+  line-height: 1.7;
+}
+
+/* En-têtes homogènes : listes et formulaires membres/événements/cotisations */
+.tafita-manager-page .page-content .page-header,
+.tafita-manager-page .page-content .page-heading,
+.tafita-manager-page .page-content .section-header,
+.tafita-manager-page .page-content .list-header,
+.tafita-manager-page .page-content .form-header,
+.tafita-manager-page .page-content .members-header,
+.tafita-manager-page .page-content .events-header,
+.tafita-manager-page .page-content .contributions-header,
+.tafita-manager-page .page-content .page-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 0 22px !important;
+  padding: clamp(21px, 3vw, 32px) !important;
+  color: #fff !important;
+  background:
+    radial-gradient(circle at 91% 15%, rgba(169, 232, 243, .24), transparent 14rem),
+    linear-gradient(118deg, #111d33 0%, #193a63 63%, #2864ad 100%) !important;
+  border: 1px solid rgba(255, 255, 255, .16) !important;
+  border-radius: 21px !important;
+  box-shadow: 0 14px 34px rgba(17, 42, 78, .12) !important;
+}
+
+.tafita-manager-page .page-content .page-header h1,
+.tafita-manager-page .page-content .page-heading h1,
+.tafita-manager-page .page-content .section-header h1,
+.tafita-manager-page .page-content .list-header h1,
+.tafita-manager-page .page-content .form-header h1,
+.tafita-manager-page .page-content .members-header h1,
+.tafita-manager-page .page-content .events-header h1,
+.tafita-manager-page .page-content .contributions-header h1,
+.tafita-manager-page .page-content .page-intro h1,
+.tafita-manager-page .page-content .page-intro h2 {
+  margin: 0 0 7px !important;
+  color: #fff !important;
+  font-size: clamp(24px, 2.8vw, 33px) !important;
+  line-height: 1.18 !important;
+  font-weight: 800 !important;
+}
+
+.tafita-manager-page .page-content .page-header p,
+.tafita-manager-page .page-content .page-heading p,
+.tafita-manager-page .page-content .section-header p,
+.tafita-manager-page .page-content .list-header p,
+.tafita-manager-page .page-content .form-header p,
+.tafita-manager-page .page-content .members-header p,
+.tafita-manager-page .page-content .events-header p,
+.tafita-manager-page .page-content .contributions-header p,
+.tafita-manager-page .page-content .page-intro p {
+  max-width: 760px;
+  margin: 0 !important;
+  color: #d9e7f8 !important;
+  font-size: 13px !important;
+  line-height: 1.75 !important;
+}
+
+.tafita-manager-page .page-content .page-header .eyebrow,
+.tafita-manager-page .page-content .page-heading .eyebrow,
+.tafita-manager-page .page-content .section-header .eyebrow,
+.tafita-manager-page .page-content .list-header .eyebrow,
+.tafita-manager-page .page-content .form-header .eyebrow,
+.tafita-manager-page .page-content .members-header .eyebrow,
+.tafita-manager-page .page-content .events-header .eyebrow,
+.tafita-manager-page .page-content .contributions-header .eyebrow,
+.tafita-manager-page .page-content .page-intro .eyebrow {
+  color: #a9e8f3 !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.5px !important;
+}
+
+/* Cartes / surfaces qui entourent tableaux et formulaires */
+.tafita-manager-page .page-content .card,
+.tafita-manager-page .page-content .panel,
+.tafita-manager-page .page-content .content-card,
+.tafita-manager-page .page-content .form-card,
+.tafita-manager-page .page-content .form-container,
+.tafita-manager-page .page-content .form-wrapper,
+.tafita-manager-page .page-content .form-panel,
+.tafita-manager-page .page-content .event-form-card,
+.tafita-manager-page .page-content .member-form-card,
+.tafita-manager-page .page-content .contribution-form-card,
+.tafita-manager-page .page-content .payment-form-card,
+.tafita-manager-page .page-content .table-container,
+.tafita-manager-page .page-content .table-responsive,
+.tafita-manager-page .page-content .responsive-table {
+  box-sizing: border-box;
+  min-width: 0;
+  background: rgba(255, 255, 255, .97);
+  border: 1px solid var(--tm-line);
+  border-radius: 17px;
+  box-shadow: 0 8px 25px rgba(18, 39, 69, .045);
+}
+
+.tafita-manager-page .page-content .card,
+.tafita-manager-page .page-content .panel,
+.tafita-manager-page .page-content .content-card,
+.tafita-manager-page .page-content .form-card,
+.tafita-manager-page .page-content .form-container,
+.tafita-manager-page .page-content .form-wrapper,
+.tafita-manager-page .page-content .form-panel,
+.tafita-manager-page .page-content .event-form-card,
+.tafita-manager-page .page-content .member-form-card,
+.tafita-manager-page .page-content .contribution-form-card,
+.tafita-manager-page .page-content .payment-form-card {
+  padding: clamp(18px, 2.5vw, 28px);
+  margin-bottom: 20px;
+}
+
+.tafita-manager-page .page-content .table-container,
+.tafita-manager-page .page-content .table-responsive,
+.tafita-manager-page .page-content .responsive-table {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  margin: 0 0 22px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tables homogènes pour les listes Membres, Événements et Cotisations */
+.tafita-manager-page .page-content table {
+  width: 100%;
+  min-width: 660px;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--tm-text);
+  background: var(--tm-surface);
+  font-size: 13px;
+}
+
+.tafita-manager-page .page-content thead th {
+  padding: 14px 16px;
+  color: #60718a;
+  background: #f5f8fc;
+  border-bottom: 1px solid var(--tm-line);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .65px;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tafita-manager-page .page-content thead th:first-child {
+  border-top-left-radius: 12px;
+}
+
+.tafita-manager-page .page-content thead th:last-child {
+  border-top-right-radius: 12px;
+}
+
+.tafita-manager-page .page-content tbody td {
+  padding: 15px 16px;
+  vertical-align: middle;
+  border-bottom: 1px solid #edf1f7;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.tafita-manager-page .page-content tbody tr {
+  transition: background .16s ease;
+}
+
+.tafita-manager-page .page-content tbody tr:nth-child(even) td {
+  background: #fbfcfe;
+}
+
+.tafita-manager-page .page-content tbody tr:hover td {
+  background: #f0f8ff;
+}
+
+.tafita-manager-page .page-content tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Recherche et filtres de liste */
+.tafita-manager-page .page-content .search-form,
+.tafita-manager-page .page-content .filter-form,
+.tafita-manager-page .page-content .list-filters {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-sizing: border-box;
+  padding: 17px;
+  margin: 0 0 18px;
+  background: #fff;
+  border: 1px solid var(--tm-line);
+  border-radius: 15px;
+  box-shadow: 0 5px 18px rgba(18, 39, 69, .035);
+}
+
+/* Toutes les entrées de formulaire partagent le même aspect */
+.tafita-manager-page .page-content input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="file"]),
+.tafita-manager-page .page-content select,
+.tafita-manager-page .page-content textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 45px;
+  padding: 11px 13px;
+  color: var(--tm-ink);
+  background: #fff;
+  border: 1px solid #d8e2ef;
+  border-radius: 11px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.tafita-manager-page .page-content textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.tafita-manager-page .page-content input[type="file"] {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 9px;
+  color: var(--tm-text);
+  background: #f8fafc;
+  border: 1px dashed #cbd8e8;
+  border-radius: 11px;
+  font-size: 12px;
+}
+
+.tafita-manager-page .page-content input:focus,
+.tafita-manager-page .page-content select:focus,
+.tafita-manager-page .page-content textarea:focus {
+  outline: none;
+  border-color: #5d9df2;
+  box-shadow: 0 0 0 4px rgba(77, 143, 231, .13);
+}
+
+.tafita-manager-page .page-content label {
+  display: block;
+  margin: 0 0 7px;
+  color: #31445d;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.tafita-manager-page .page-content .helptext,
+.tafita-manager-page .page-content .help-text,
+.tafita-manager-page .page-content .form-text,
+.tafita-manager-page .page-content .field-help {
+  display: block;
+  margin-top: 6px;
+  color: var(--tm-muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* Boutons uniformes : primaire, secondaire, modifier, supprimer */
+.tafita-manager-page .page-content button,
+.tafita-manager-page .page-content input[type="submit"],
+.tafita-manager-page .page-content .btn,
+.tafita-manager-page .page-content .button,
+.tafita-manager-page .page-content .submit-button,
+.tafita-manager-page .page-content .primary-button {
+  box-sizing: border-box;
+  min-height: 39px;
+  padding: 10px 15px;
+  border-radius: 11px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.35;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+}
+
+.tafita-manager-page .page-content button[type="submit"],
+.tafita-manager-page .page-content input[type="submit"],
+.tafita-manager-page .page-content .btn-primary,
+.tafita-manager-page .page-content .button-primary,
+.tafita-manager-page .page-content .submit-button,
+.tafita-manager-page .page-content .primary-button {
+  color: #fff;
+  background: linear-gradient(115deg, #245bd4, #397fe8);
+  border: 1px solid transparent;
+  box-shadow: 0 6px 15px rgba(37, 91, 212, .17);
+}
+
+.tafita-manager-page .page-content .btn-secondary,
+.tafita-manager-page .page-content .button-secondary,
+.tafita-manager-page .page-content .cancel-button,
+.tafita-manager-page .page-content a.btn-secondary,
+.tafita-manager-page .page-content .edit-action,
+.tafita-manager-page .page-content .view-action {
+  color: #245bc7;
+  background: #eef5ff;
+  border: 1px solid #d8e7ff;
+  box-shadow: none;
+}
+
+.tafita-manager-page .page-content .delete-action,
+.tafita-manager-page .page-content .btn-danger,
+.tafita-manager-page .page-content .button-danger {
+  color: var(--tm-red);
+  background: var(--tm-red-bg);
+  border: 1px solid #ffd7e0;
+  box-shadow: none;
+}
+
+.tafita-manager-page .page-content button:hover,
+.tafita-manager-page .page-content input[type="submit"]:hover,
+.tafita-manager-page .page-content .btn:hover,
+.tafita-manager-page .page-content .button:hover,
+.tafita-manager-page .page-content .submit-button:hover,
+.tafita-manager-page .page-content .primary-button:hover {
+  transform: translateY(-1px);
+}
+
+.tafita-manager-page .page-content button:focus-visible,
+.tafita-manager-page .page-content a:focus-visible,
+.tafita-manager-page .page-content input:focus-visible,
+.tafita-manager-page .page-content select:focus-visible,
+.tafita-manager-page .page-content textarea:focus-visible {
+  outline: 3px solid rgba(141, 224, 243, .95);
+  outline-offset: 3px;
+}
+
+/* Actions de ligne : restent alignées et peuvent passer à la ligne */
+.tafita-manager-page .page-content .event-actions,
+.tafita-manager-page .page-content .member-actions,
+.tafita-manager-page .page-content .contribution-actions,
+.tafita-manager-page .page-content .row-actions,
+.tafita-manager-page .page-content .table-actions,
+.tafita-manager-page .page-content .form-actions,
+.tafita-manager-page .page-content .form-buttons,
+.tafita-manager-page .page-content .actions-row,
+.tafita-manager-page .page-content .form-submit-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.tafita-manager-page .page-content .event-action,
+.tafita-manager-page .page-content .edit-action,
+.tafita-manager-page .page-content .delete-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
+/* États / badges */
+.tafita-manager-page .page-content .status,
+.tafita-manager-page .page-content .badge,
+.tafita-manager-page .page-content .status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  padding: 6px 10px;
+  color: #475569;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.35;
+  white-space: normal;
+}
+
+.tafita-manager-page .page-content .status-paid,
+.tafita-manager-page .page-content .status-active,
+.tafita-manager-page .page-content .status-completed,
+.tafita-manager-page .page-content .status-success {
+  color: var(--tm-green);
+  background: var(--tm-green-bg);
+  border-color: #c8efdc;
+}
+
+.tafita-manager-page .page-content .status-pending,
+.tafita-manager-page .page-content .status-partial,
+.tafita-manager-page .page-content .status-planned {
+  color: var(--tm-amber);
+  background: var(--tm-amber-bg);
+  border-color: #f2e3b5;
+}
+
+.tafita-manager-page .page-content .status-rejected,
+.tafita-manager-page .page-content .status-cancelled,
+.tafita-manager-page .page-content .status-inactive,
+.tafita-manager-page .page-content .status-unpaid {
+  color: var(--tm-red);
+  background: var(--tm-red-bg);
+  border-color: #ffd7e0;
+}
+
+/* Messages, erreurs et liste vide */
+.tafita-manager-page .page-content .empty-state,
+.tafita-manager-page .page-content .empty-message {
+  padding: clamp(24px, 4vw, 42px);
+  color: var(--tm-muted);
+  background: #f8fbff;
+  border: 1px dashed #d3dfed;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.tafita-manager-page .page-content .errorlist {
+  margin: 6px 0 10px;
+  padding-left: 18px;
+  color: var(--tm-red);
+  font-size: 12px;
+}
+
+/* Écrans moyens */
+@media (max-width: 900px) {
+  .tafita-manager-page .page-content {
+    padding: 18px !important;
+  }
+
+  .tafita-manager-page .page-content .dashboard-columns {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+/* Téléphones */
+@media (max-width: 600px) {
+  .tafita-manager-page .page-content {
+    padding: 12px !important;
+  }
+
+  .tafita-manager-page .page-content .page-header,
+  .tafita-manager-page .page-content .page-heading,
+  .tafita-manager-page .page-content .section-header,
+  .tafita-manager-page .page-content .list-header,
+  .tafita-manager-page .page-content .form-header,
+  .tafita-manager-page .page-content .members-header,
+  .tafita-manager-page .page-content .events-header,
+  .tafita-manager-page .page-content .contributions-header,
+  .tafita-manager-page .page-content .page-intro {
+    align-items: flex-start;
+    padding: 20px !important;
+    border-radius: 16px !important;
+  }
+
+  .tafita-manager-page .page-content .page-header a,
+  .tafita-manager-page .page-content .page-heading a,
+  .tafita-manager-page .page-content .list-header a,
+  .tafita-manager-page .page-content .events-header a,
+  .tafita-manager-page .page-content .members-header a,
+  .tafita-manager-page .page-content .contributions-header a {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .tafita-manager-page .page-content .card,
+  .tafita-manager-page .page-content .panel,
+  .tafita-manager-page .page-content .content-card,
+  .tafita-manager-page .page-content .form-card,
+  .tafita-manager-page .page-content .form-container,
+  .tafita-manager-page .page-content .form-wrapper,
+  .tafita-manager-page .page-content .form-panel,
+  .tafita-manager-page .page-content .event-form-card,
+  .tafita-manager-page .page-content .member-form-card,
+  .tafita-manager-page .page-content .contribution-form-card,
+  .tafita-manager-page .page-content .payment-form-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .tafita-manager-page .page-content .form-actions,
+  .tafita-manager-page .page-content .form-buttons,
+  .tafita-manager-page .page-content .actions-row,
+  .tafita-manager-page .page-content .form-submit-row {
+    align-items: stretch;
+  }
+
+  .tafita-manager-page .page-content .form-actions>*,
+  .tafita-manager-page .page-content .form-buttons>*,
+  .tafita-manager-page .page-content .actions-row>*,
+  .tafita-manager-page .page-content .form-submit-row>* {
+    max-width: 100%;
+  }
+
+  .tafita-manager-page .page-content table {
+    min-width: 620px;
+    font-size: 12px;
+  }
+
+  .tafita-manager-page .page-content thead th,
+  .tafita-manager-page .page-content tbody td {
+    padding: 12px 13px;
+  }
+
+  .tafita-manager-page .page-content .event-actions,
+  .tafita-manager-page .page-content .member-actions,
+  .tafita-manager-page .page-content .contribution-actions,
+  .tafita-manager-page .page-content .row-actions,
+  .tafita-manager-page .page-content .table-actions {
+    align-items: flex-start;
+  }
+
+  .tafita-manager-page .page-content .event-action,
+  .tafita-manager-page .page-content .edit-action,
+  .tafita-manager-page .page-content .delete-action {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .tafita-manager-page .page-content *,
+  .tafita-manager-page .page-content *::before,
+  .tafita-manager-page .page-content *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

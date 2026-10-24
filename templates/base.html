@@ -1,98 +1,138 @@
-
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111d33">
+    <meta name="description" content="TaFiTa Manager — gestion associative">
     <title>{% block title %}TaFiTa Manager{% endblock %}</title>
+
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
     {% block extra_css %}{% endblock %}
+    <!-- Chargée en dernier pour garder un design cohérent sur toutes les pages admin. -->
+    <link rel="stylesheet" href="{% static 'css/tafita-manager-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tafita-manager-pages.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tafita-responsive-fix.css' %}">
+    <link rel="stylesheet" href="{% static 'css/member-avatars.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tafita-crud-unified.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tafita-polish.css' %}">
 </head>
-<body>
-    <div class="app-layout">
-        <aside class="sidebar" id="sidebar">
-            <a class="brand" href="{% url 'dashboard' %}">
-                <span class="brand-logo">T</span>
-                <span>
-                    <strong>TaFiTa</strong>
-                    <small>MANAGER</small>
-                </span>
+<body class="tafita-manager-page">
+<div class="app-layout">
+    <aside class="sidebar" id="sidebar">
+        <a class="brand" href="{% url 'dashboard' %}" aria-label="TaFiTa Manager — tableau de bord">
+            <span class="brand-logo">T</span>
+            <span class="brand-copy"><strong>TaFiTa</strong><small>MANAGER</small></span>
+        </a>
+
+        <div class="sidebar-label">GESTION ASSOCIATIVE</div>
+        <nav class="sidebar-nav" aria-label="Navigation de gestion">
+            {% if request.user.is_superuser or perms.members.view_member or perms.events.view_event or perms.contributions.view_contribution %}
+            <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}is-active{% endif %}">
+                <span class="nav-icon" aria-hidden="true">⌂</span><span>Tableau de bord</span>
             </a>
+            {% endif %}
 
-            <div class="sidebar-label">MENU PRINCIPAL</div>
+            {% if request.user.is_superuser or perms.members.view_member %}
+            <a href="{% url 'member_list' %}" class="nav-link {% if request.resolver_match.url_name == 'member_list' or request.resolver_match.url_name == 'member_create' or request.resolver_match.url_name == 'member_update' %}is-active{% endif %}">
+                <span class="nav-icon" aria-hidden="true">♙</span><span>Membres</span>
+            </a>
+            {% endif %}
 
-            <nav class="sidebar-nav">
-                <a href="{% url 'dashboard' %}" class="nav-link">
-                    <span class="nav-icon">⌂</span>
-                    <span>Tableau de bord</span>
-                </a>
-                <a href="{% url 'member_list' %}" class="nav-link">
-                    <span class="nav-icon">♙</span>
-                    <span>Membres</span>
-                </a>
-                <a href="{% url 'events_list' %}" class="nav-link">
-                    <span class="nav-icon">▦</span>
-                    <span>Événements</span>
-                </a>
+            {% if request.user.is_superuser or perms.events.view_event %}
+            <a href="{% url 'events_list' %}" class="nav-link {% if request.resolver_match.url_name == 'events_list' or request.resolver_match.url_name == 'event_create' or request.resolver_match.url_name == 'event_update' %}is-active{% endif %}">
+                <span class="nav-icon" aria-hidden="true">▦</span><span>Événements</span>
+            </a>
+            {% endif %}
 
-                {% if perms.contributions.view_contribution %}
-                <a href="{% url 'contribution_list' %}" class="nav-link">
-                    <span class="nav-icon">₳</span>
-                    <span>Cotisations</span>
-                </a>
+            {% if request.user.is_superuser or perms.contributions.view_contribution %}
+            <a href="{% url 'contribution_list' %}" class="nav-link {% if request.resolver_match.url_name == 'contribution_list' or request.resolver_match.url_name == 'contribution_create' or request.resolver_match.url_name == 'payment_create' %}is-active{% endif %}">
+                <span class="nav-icon" aria-hidden="true">Ar</span><span>Cotisations</span>
+            </a>
+            {% endif %}
+            {% if request.user.is_superuser or request.user.is_staff or perms.members.view_member or perms.events.view_event or perms.contributions.view_contribution %}
+            <a href="{% url 'ai_assistant:home' %}" class="nav-link">
+                <span class="nav-icon">✦</span>
+                <span>Assistant IA</span>
+            </a>
+            {% endif %}
+            <a href="{% url 'community_notifications' %}" class="nav-link">
+                <span class="nav-icon" aria-hidden="true">♧</span>
+                <span>Notifications</span>
+                {% if tafita_unread_notification_count %}
+                    <span class="community-notification-badge">{{ tafita_unread_notification_count }}</span>
                 {% endif %}
+            </a>
+        </nav>
 
-            </nav>
+        <div class="sidebar-label sidebar-label-spaced">ESPACE COMMUNAUTAIRE</div>
+        <nav class="sidebar-nav" aria-label="Accès à la communauté">
+            <a href="{% url 'community_feed' %}" class="nav-link community-entry">
+                <span class="nav-icon" aria-hidden="true">◉</span>
+                <span>Ouvrir TaFiTa Communauté</span>
+                <span class="nav-external" aria-hidden="true">↗</span>
+            </a>
+        </nav>
 
-            <div class="sidebar-bottom">
-                <div class="sidebar-note">
-                    <strong>TaFiTa Association</strong>
-                    <p>Gérez vos activités en toute simplicité.</p>
-                </div>
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="nav-link logout-link logout-button">
-                        <span class="nav-icon">↪</span>
-                        <span>Déconnexion</span>
-                    </button>
-                </form>
+        <div class="sidebar-bottom">
+            <div class="sidebar-note">
+                <strong>TaFiTa Association</strong>
+                <p>Grandir ensemble, agir ensemble.</p>
             </div>
-        </aside>
+            <div class="sidebar-user-card">
+                {% include "community/includes/avatar.html" with avatar_user=request.user avatar_size="sidebar-user-avatar" only %}
+                <span class="sidebar-user-meta">
+                    <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                    <small>Administration</small>
+                </span>
+            </div>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="nav-link logout-link logout-button">
+                    <span class="nav-icon" aria-hidden="true">↪</span><span>Déconnexion</span>
+                </button>
+            </form>
+        </div>
+    </aside>
 
-        <main class="main-area">
-            <header class="topbar">
-                <button class="menu-toggle" id="menuToggle"
-                        aria-label="Ouvrir le menu">☰</button>
-
-                <div class="topbar-context">
-                    <span class="topbar-overline">ESPACE DE GESTION</span>
-                    <strong>{% block page_heading %}Tableau de bord{% endblock %}</strong>
+    <main class="main-area">
+        <header class="topbar">
+            <button type="button" class="menu-toggle" id="menuToggle"
+                    aria-label="Ouvrir ou fermer le menu"
+                    aria-controls="sidebar" aria-expanded="false">☰</button>
+            <div class="topbar-context">
+                <span class="topbar-overline">ESPACE DE GESTION</span>
+                <strong>{% block page_heading %}Tableau de bord{% endblock %}</strong>
+            </div>
+            <div class="topbar-user">
+                <span class="topbar-online-dot" aria-hidden="true"></span>
+                {% include "community/includes/avatar.html" with avatar_user=request.user avatar_size="user-avatar" only %}
+                <div class="user-info">
+                    <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                    <span>Administration</span>
                 </div>
+            </div>
+        </header>
 
-                <div class="topbar-user">
-                    <div class="user-avatar">
-                        {{ request.user.username|first|upper }}
-                    </div>
-                    <div class="user-info">
-                        <strong>{{ request.user.username }}</strong>
-                        <span>Administrateur</span>
-                    </div>
-                </div>
-            </header>
+        <section class="page-content">
+            {% if messages %}
+            <div class="notice-stack" aria-live="polite">
+                {% for message in messages %}
+                <div class="notice notice-{{ message.tags|default:'info' }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </section>
 
-            <section class="page-content">
-                {% block content %}{% endblock %}
-            </section>
-
-            <footer class="app-footer">
-                <span>TaFiTa Manager</span>
-                <span>Gestion associative</span>
-            </footer>
-        </main>
-    </div>
-
-    <script src="{% static 'js/app.js' %}"></script>
-    {% block extra_js %}{% endblock %}
+        <footer class="app-footer">
+            <span><strong>TaFiTa Manager</strong></span>
+            <span>Grandir ensemble, agir ensemble.</span>
+        </footer>
+    </main>
+</div>
+<script src="{% static 'js/app.js' %}"></script>
+{% block extra_js %}{% endblock %}
 </body>
 </html>

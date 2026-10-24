@@ -1,0 +1,71 @@
+{% extends "community/base_member.html" %}
+
+{% block title %}Notifications | TaFiTa{% endblock %}
+{% block page_heading %}Notifications{% endblock %}
+
+{% block content %}
+<section class="tafita-notifications">
+    <header class="tafita-notifications__intro">
+        <span class="tafita-notifications__eyebrow">ESPACE ASSOCIATIF</span>
+        <h1>Vos notifications</h1>
+        <p>Retrouvez les informations concernant votre compte et les activités de TaFiTa.</p>
+        <div class="tafita-notifications__summary">
+            <strong>{{ unread_count }}</strong>
+            <span>notification(s) non lue(s)</span>
+        </div>
+    </header>
+
+    {% if unread_count %}
+        <form method="post" action="{% url 'community_notifications_mark_all_read' %}"
+              class="tafita-notifications__bulk-form">
+            {% csrf_token %}
+            <button type="submit" class="community-button">Tout marquer comme lu</button>
+        </form>
+    {% endif %}
+
+    <div class="tafita-notifications__list">
+        {% for notification in notifications %}
+            <article class="tafita-notification{% if notification.is_read %} is-read{% else %} is-unread{% endif %}">
+                <div class="tafita-notification__icon" aria-hidden="true">
+                    {% if notification.category == "event" %}▦
+                    {% elif notification.category == "payment" %}Ar
+                    {% elif notification.category == "community" %}◉
+                    {% else %}♧{% endif %}
+                </div>
+
+                <div class="tafita-notification__body">
+                    <div class="tafita-notification__meta">
+                        <span>{{ notification.get_category_display }}</span>
+                        <time datetime="{{ notification.created_at|date:'c' }}">
+                            {{ notification.created_at|date:"d/m/Y à H:i" }}
+                        </time>
+                    </div>
+                    <h2>{{ notification.title }}</h2>
+                    <p>{{ notification.message }}</p>
+                    {% if notification.url|slice:":1" == "/" and notification.url|slice:":2" != "//" %}
+                        <a class="tafita-notification__destination"
+                           href="{{ notification.url }}">Ouvrir la page concernée →</a>
+                    {% endif %}
+                    {% if not notification.is_read %}
+                        <form method="post"
+                              action="{% url 'community_notification_mark_read' notification.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="tafita-notification__read-button">
+                                Marquer comme lue
+                            </button>
+                        </form>
+                    {% else %}
+                        <span class="tafita-notification__read-label">Lue</span>
+                    {% endif %}
+                </div>
+            </article>
+        {% empty %}
+            <div class="tafita-notifications__empty">
+                <span aria-hidden="true">♧</span>
+                <h2>Aucune notification</h2>
+                <p>Les nouvelles informations associatives apparaîtront ici.</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

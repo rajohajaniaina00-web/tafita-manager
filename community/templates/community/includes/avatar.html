@@ -1,0 +1,2 @@
+{% comment %}Reusable TaFiTa avatar: avatar_user is a Django user; avatar_size is CSS size classes.{% endcomment %}
+{% if avatar_user.member_profile.photo %}<img class="{{ avatar_size }} avatar-photo" src="{{ avatar_user.member_profile.photo.url }}" alt="Photo de {{ avatar_user.get_full_name|default:avatar_user.username }}" loading="lazy">{% else %}<span class="{{ avatar_size }}" aria-hidden="true">{{ avatar_user.get_full_name|default:avatar_user.username|first|upper }}</span>{% endif %}

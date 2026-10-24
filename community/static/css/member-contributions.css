@@ -1,0 +1,213 @@
+
+/* ==========================================
+   TaFiTa Communauté — Mes cotisations
+   ========================================== */
+
+.community-page .community-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 7px;
+}
+
+.community-page .community-nav > .community-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 9px 12px;
+    line-height: 1.4;
+    text-align: left;
+    text-decoration: none;
+}
+
+.community-page .community-nav > .community-nav-link > span:first-child {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    color: #b8e8f6;
+    background: rgba(130, 200, 230, 0.10);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.community-page .community-nav > .community-nav-link.is-active > span:first-child {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* Contenu de la page des cotisations */
+.community-contributions-page .community-content {
+    width: 100%;
+    max-width: 1240px;
+    min-width: 0;
+    margin-inline: auto;
+    box-sizing: border-box;
+}
+
+.community-contributions-page .community-content h1 {
+    color: #14243a;
+    font-size: clamp(26px, 3vw, 36px);
+    font-weight: 800;
+    line-height: 1.18;
+    letter-spacing: -0.8px;
+    margin-block: 8px 12px;
+}
+
+.community-contributions-page .community-content h2 {
+    color: #172b46;
+    font-size: clamp(18px, 2vw, 23px);
+    font-weight: 750;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.community-contributions-page .community-content .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #2772c9;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    line-height: 1.5;
+}
+
+.community-contributions-page .community-content .muted-copy {
+    color: #607087;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* Cartes de cotisation et formulaires */
+.community-contributions-page .community-content .surface.settings-panel {
+    box-sizing: border-box;
+    min-width: 0;
+    margin: 0 0 22px;
+    padding: clamp(19px, 3vw, 30px);
+    overflow-wrap: anywhere;
+    background: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid #e2eaf4;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(17, 38, 68, 0.06);
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.community-contributions-page .community-content .surface.settings-panel:hover {
+    border-color: #c9dff5;
+    box-shadow: 0 14px 36px rgba(17, 38, 68, 0.09);
+}
+
+/* Mise en page des formulaires */
+.community-contributions-page .stack-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 11px;
+    width: 100%;
+    min-width: 0;
+}
+
+.community-contributions-page .stack-form label {
+    margin-top: 5px;
+    color: #25364d;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.community-contributions-page .stack-form input:not([type="checkbox"]),
+.community-contributions-page .stack-form input:not([type="radio"]),
+.community-contributions-page .stack-form select,
+.community-contributions-page .stack-form textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    color: #172b46;
+    background: #ffffff;
+    border: 1px solid #d8e2ef;
+    border-radius: 12px;
+    font: inherit;
+    font-size: 14px;
+}
+
+.community-contributions-page .stack-form textarea {
+    min-height: 95px;
+    resize: vertical;
+}
+
+.community-contributions-page .stack-form input:focus,
+.community-contributions-page .stack-form select:focus,
+.community-contributions-page .stack-form textarea:focus {
+    outline: none;
+    border-color: #4c91ec;
+    box-shadow: 0 0 0 4px rgba(76, 145, 236, 0.12);
+}
+
+/* Bouton de déclaration de paiement */
+.community-contributions-page .stack-form .button.button-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: fit-content;
+    max-width: 100%;
+    min-height: 46px;
+    margin-top: 8px;
+    padding: 12px 20px;
+    color: #ffffff;
+    background: linear-gradient(115deg, #245ed6, #397fe8);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    box-shadow: 0 7px 17px rgba(37, 99, 214, 0.20);
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.4;
+    text-align: center;
+    white-space: normal;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.community-contributions-page .stack-form .button.button-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(37, 99, 214, 0.27);
+}
+
+/* Téléphones et petites tablettes */
+@media (max-width: 600px) {
+    .community-contributions-page .community-content {
+        padding-inline: 12px;
+    }
+
+    .community-contributions-page .community-content .surface.settings-panel {
+        padding: 18px 15px;
+        margin-bottom: 16px;
+        border-radius: 15px;
+    }
+
+    .community-contributions-page .stack-form .button.button-primary {
+        width: 100%;
+    }
+
+    .community-page .community-nav > .community-nav-link {
+        min-height: 46px;
+        padding-inline: 10px;
+    }
+}
+
+/* Accessibilité : respecter les préférences de mouvement */
+@media (prefers-reduced-motion: reduce) {
+    .community-contributions-page *,
+    .community-page .community-nav * {
+        transition: none !important;
+    }
+}

@@ -1,18 +1,22 @@
-
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Événements | TaFiTa Manager{% endblock %}
 {% block page_heading %}Événements{% endblock %}
-
+{% block extra_css%}
+<link rel="stylesheet" href="{% static 'css/events.css' %}">
+{% endblock %}
 {% block content %}
 
-<div class="page-intro">
+<div class="section-header">
     <div>
         <h1>Gestion des événements</h1>
-        <p>Consultez et organisez les activités de votre association.</p>
+        <p class="muted">
+            Consultez et organisez les activités de votre association.
+        </p>
     </div>
 
-    <a href="{% url 'event_create' %}" class="form-button primary">
+    <a class="button" href="{% url 'event_create' %}" >
         + Ajouter un événement
     </a>
 </div>

@@ -79,7 +79,8 @@
                                 {{ contribution.current_status_display }}
                             </span>
                         </td>
-                        <td>
+
+                        <td class="contribution-actions">
                             {% if contribution.remaining_amount > 0 %}
                                 <a class="button small primary"
                                    href="{% url 'payment_create' contribution.pk %}">
@@ -88,7 +89,73 @@
                             {% else %}
                                 <span>Solde réglé</span>
                             {% endif %}
+
+                            <details class="payment-audit">
+                                <summary>
+                                    Historique des paiements
+                                    ({{ contribution.payments.all|length }})
+                                </summary>
+                                <div class="payment-audit-list">
+                                    {% for payment in contribution.payments.all %}
+                                        <article class="payment-audit-item">
+                                            <p>
+                                                <strong>{{ payment.amount }} Ar</strong>
+                                                — {{ payment.payment_date|date:"d/m/Y" }}
+                                                — {{ payment.get_method_display }}
+                                            </p>
+
+                                            {% if payment.reference %}
+                                                <p>Référence : {{ payment.reference }}</p>
+                                            {% endif %}
+
+                                            {% if payment.is_voided %}
+                                                <p class="message warning">
+                                                    Paiement annulé
+                                                    {% if payment.voided_at %}
+                                                        le {{ payment.voided_at|date:"d/m/Y H:i" }}
+                                                    {% endif %}
+                                                </p>
+                                                <p>
+                                                    Motif :
+                                                    {{ payment.void_reason|default:"Non précisé" }}
+                                                </p>
+                                            {% else %}
+                                                <p>Statut : enregistré</p>
+
+                                                {% if perms.contributions.delete_payment %}
+                                                    <form method="post"
+                                                          action="{% url 'payment_delete' payment.pk %}"
+                                                          class="payment-void-form">
+                                                        {% csrf_token %}
+                                                        <label for="void-reason-{{ payment.pk }}">
+                                                            Motif d'annulation *
+                                                        </label>
+                                                        <input
+                                                            id="void-reason-{{ payment.pk }}"
+                                                            type="text"
+                                                            name="reason"
+                                                            maxlength="300"
+                                                            required
+                                                            placeholder="Ex. : erreur de saisie du montant"
+                                                        >
+                                                        <button
+                                                            class="button small secondary"
+                                                            type="submit"
+                                                            onclick="return confirm('Confirmer l’annulation de ce paiement ? Le paiement sera conservé dans l’historique.');"
+                                                        >
+                                                            Annuler ce paiement
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                            {% endif %}
+                                        </article>
+                                    {% empty %}
+                                        <p>Aucun paiement enregistré pour cette cotisation.</p>
+                                    {% endfor %}
+                                </div>
+                            </details>
                         </td>
+
                     </tr>
                     {% empty %}
                     <tr>

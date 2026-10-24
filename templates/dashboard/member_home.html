@@ -1,0 +1,148 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mon espace | TaFiTa Manager{% endblock %}
+{% block page_heading %}Espace membre{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/member-portal.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="member-dashboard">
+
+    <section class="member-welcome">
+        <div>
+            <span class="member-eyebrow">ESPACE MEMBRE</span>
+            <h1>Bonjour, {{ member.first_name }} !</h1>
+            <p>Retrouvez vos activités associatives et votre situation personnelle.</p>
+        </div>
+        <span class="member-status">Membre actif</span>
+    </section>
+
+    <section class="member-stat-grid">
+        <article class="member-stat-card">
+            <span class="member-stat-icon">◎</span>
+            <p>Total des cotisations</p>
+            <strong>{{ total_expected }} Ar</strong>
+            <small>Montant attendu</small>
+        </article>
+
+        <article class="member-stat-card">
+            <span class="member-stat-icon">✓</span>
+            <p>Total des paiements</p>
+            <strong>{{ total_paid }} Ar</strong>
+            <small>Paiements enregistrés</small>
+        </article>
+
+        <article class="member-stat-card">
+            <span class="member-stat-icon">◷</span>
+            <p>Solde restant</p>
+            <strong>{{ remaining_total }} Ar</strong>
+            <small>Montant encore à régler</small>
+        </article>
+    </section>
+
+    <section class="member-panel" id="member-events">
+        <div class="member-panel-heading">
+            <div>
+                <span class="member-eyebrow">LA VIE ASSOCIATIVE</span>
+                <h2>Prochains événements</h2>
+            </div>
+            <span class="member-panel-icon">▦</span>
+        </div>
+
+        {% for event in upcoming_events %}
+            <article class="member-list-item">
+                <div class="member-date-block">
+                    <span>{{ event.date|date:"d" }}</span>
+                    <small>{{ event.date|date:"M" }}</small>
+                </div>
+                <div class="member-list-content">
+                    <h3>{{ event.title }}</h3>
+                    <p>{{ event.date|date:"d/m/Y à H:i" }} · {{ event.location }}</p>
+                    {% if event.description %}
+                        <p>{{ event.description|truncatewords:22 }}</p>
+                    {% endif %}
+                </div>
+                <span class="member-pill">{{ event.current_status_display }}</span>
+            </article>
+        {% empty %}
+            <div class="member-empty">
+                <strong>Aucun événement à afficher</strong>
+                <p>Les prochains événements publiés apparaîtront ici.</p>
+            </div>
+        {% endfor %}
+    </section>
+
+    <section class="member-panel" id="member-contributions">
+        <div class="member-panel-heading">
+            <div>
+                <span class="member-eyebrow">SUIVI PERSONNEL</span>
+                <h2>Mes cotisations</h2>
+            </div>
+            <span class="member-panel-icon">Ar</span>
+        </div>
+
+        {% for contribution in recent_contributions %}
+            <article class="member-list-item">
+                <div class="member-list-content">
+                    <h3>{{ contribution.title }}</h3>
+                    <p>
+                        Échéance :
+                        {% if contribution.due_date %}
+                            {{ contribution.due_date|date:"d/m/Y" }}
+                        {% else %}
+                            Non définie
+                        {% endif %}
+                    </p>
+                    <p>
+                        Payé : {{ contribution.total_paid }} Ar
+                        · Reste : {{ contribution.remaining_amount }} Ar
+                    </p>
+                </div>
+                <span class="member-pill">{{ contribution.current_status_display }}</span>
+            </article>
+        {% empty %}
+            <div class="member-empty">
+                <strong>Aucune cotisation enregistrée</strong>
+                <p>Les cotisations qui vous sont attribuées apparaîtront ici.</p>
+            </div>
+        {% endfor %}
+
+        <p class="member-info-note">
+            Les règlements en ligne et les déclarations de paiement seront ajoutés
+            dans une prochaine étape.
+        </p>
+    </section>
+
+    <section class="member-panel">
+        <div class="member-panel-heading">
+            <div>
+                <span class="member-eyebrow">HISTORIQUE</span>
+                <h2>Derniers paiements</h2>
+            </div>
+            <span class="member-panel-icon">↗</span>
+        </div>
+
+        {% for payment in latest_payments %}
+            <article class="member-list-item">
+                <div class="member-list-content">
+                    <h3>{{ payment.contribution.title }}</h3>
+                    <p>Le {{ payment.payment_date|date:"d/m/Y" }}</p>
+                </div>
+                <strong class="member-payment-amount">
+                    {{ payment.amount }} Ar
+                </strong>
+            </article>
+        {% empty %}
+            <div class="member-empty">
+                <strong>Aucun paiement enregistré</strong>
+                <p>Votre historique de paiement apparaîtra ici.</p>
+            </div>
+        {% endfor %}
+    </section>
+
+</div>
+{% endblock %}

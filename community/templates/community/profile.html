@@ -1,0 +1,30 @@
+{% extends "community/base_member.html" %}
+{% load static %}
+{% block title %}Mon profil | TaFiTa{% endblock %}
+{% block page_heading %}Mon profil{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/member-profile.css' %}">{% endblock %}
+{% block content %}
+<section class="member-profile-page">
+  <header class="profile-page-heading"><span class="profile-eyebrow">VOTRE ESPACE PERSONNEL</span><h1>Mon profil</h1><p>Personnalisez votre présence au sein de la communauté TaFiTa.</p></header>
+  <div class="profile-card">
+    <div class="profile-overview">
+      <div class="profile-avatar-frame">
+        {% include "community/includes/avatar.html" with avatar_user=request.user avatar_size="profile-avatar-img" only %}
+      </div>
+      <div class="profile-identity"><span class="profile-eyebrow">MEMBRE TAFITA</span><h2>{{ member.first_name }} {{ member.last_name }}</h2><p>{{ request.user.username }}</p><span class="profile-active-pill">Compte actif</span></div>
+    </div>
+    <div class="profile-divider"></div>
+    <form method="post" enctype="multipart/form-data" class="profile-photo-form">
+      {% csrf_token %}
+      <div class="profile-form-heading"><h3>Photo de profil</h3><p>Utilisez une photo nette et reconnaissable. Elle sera affichée à côté de vos publications, commentaires et messages.</p></div>
+      <label class="profile-upload-label" for="id_photo">Sélectionner une image</label>
+      {{ form.photo }}
+      {% if form.photo.help_text %}<small class="profile-help">{{ form.photo.help_text }}</small>{% endif %}
+      {% if form.photo.errors %}<div class="profile-errors">{{ form.photo.errors }}</div>{% endif %}
+      <div class="profile-actions"><button type="submit" class="profile-primary-button">Enregistrer la photo <span aria-hidden="true">→</span></button>
+      {% if member.photo %}<button type="submit" class="profile-secondary-button" name="remove_photo" value="1" formnovalidate onclick="return confirm('Supprimer votre photo de profil ?')">Supprimer la photo</button>{% endif %}</div>
+    </form>
+    <div class="profile-privacy-note"><span aria-hidden="true">◇</span><p>Vous ne pouvez modifier que la photo de votre propre compte. Le nom officiel de votre fiche membre reste géré par l’association.</p></div>
+  </div>
+</section>
+{% endblock %}

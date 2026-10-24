@@ -1,0 +1,31 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Accès à mon espace | TaFiTa Manager{% endblock %}
+{% block page_heading %}Espace membre{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/member-portal.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="member-empty-state">
+    <div class="member-empty-state-icon">T</div>
+
+    {% if reason == "inactive" %}
+        <h1>Compte membre inactif</h1>
+        <p>
+            Votre fiche membre est désactivée. Contactez un administrateur
+            de l'association pour obtenir des informations.
+        </p>
+    {% else %}
+        <h1>Votre compte n'est pas encore associé</h1>
+        <p>
+            Votre connexion fonctionne, mais aucune fiche membre n'est liée
+            à votre compte. Contactez un administrateur TaFiTa pour qu'il
+            associe votre compte à votre fiche de membre.
+        </p>
+    {% endif %}
+</div>
+{% endblock %}

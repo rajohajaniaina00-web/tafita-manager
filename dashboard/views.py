@@ -1,10 +1,12 @@
 
 from datetime import date
 
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import (
     Sum,
+    Q,
     F,
     Value,
     Case,
@@ -102,29 +104,33 @@ def dashboard_view(request):
     if can_view_events:
         events_total = Event.objects.count()
 
-        upcoming_events = Event.objects.filter(
-            date__gte=now,
-            status="planned",
+        active_events = Event.objects.exclude(
+            status="cancelled"
+        ).filter(
+            Q(date__gte=now)
+            | Q(end_date__gt=now)
+            | Q(end_date__isnull=True, date__date=today)
         ).order_by("date")
 
-        events_upcoming_count = upcoming_events.count()
+        events_upcoming_count = active_events.count()
 
-        events_completed_count = sum(
-            1
-            for event in Event.objects.exclude(
-                status="cancelled"
-            ).only("date", "end_date", "status")
-            if event.current_status == "completed"
-        )
+        events_completed_count = Event.objects.exclude(
+            status="cancelled"
+        ).filter(
+            date__lte=now,
+        ).filter(
+            Q(end_date__lte=now)
+            | Q(end_date__isnull=True, date__date__lt=today)
+        ).count()
 
-        next_events = upcoming_events[:5]
+        next_events = active_events[:5]
 
     # 3. Données financières : requêtes exécutées uniquement
     # pour les utilisateurs disposant de la permission financière.
     if can_view_finances:
         contributions_with_payments = Contribution.objects.annotate(
             paid_amount=Coalesce(
-                Sum("payments__amount"),
+                Sum("payments__amount", filter=Q(payments__is_voided=False)),
                 Value(0),
                 output_field=BigIntegerField(),
             )
@@ -146,7 +152,7 @@ def dashboard_view(request):
         )
 
         paid_total = (
-            Payment.objects.aggregate(
+            Payment.objects.filter(is_voided=False).aggregate(
                 total=Sum("amount")
             )["total"] or 0
         )
@@ -178,7 +184,7 @@ def dashboard_view(request):
             ).count()
         )
 
-        recent_payments = Payment.objects.select_related(
+        recent_payments = Payment.objects.filter(is_voided=False).select_related(
             "contribution",
             "contribution__member",
         ).order_by("-payment_date", "-created_at")[:5]
@@ -189,6 +195,7 @@ def dashboard_view(request):
 
         monthly_payments = (
             Payment.objects.filter(
+                is_voided=False,
                 payment_date__gte=first_month
             )
             .annotate(month=TruncMonth("payment_date"))
@@ -238,3 +245,74 @@ def dashboard_view(request):
     }
 
     return render(request, "dashboard/index.html", context)
+
+@login_required
+def member_home(request):
+    """Tableau de bord personnel du membre connecté."""
+    try:
+        member = request.user.member_profile
+    except Member.DoesNotExist:
+        return render(
+            request,
+            "dashboard/member_not_linked.html",
+            {"reason": "missing"},
+        )
+
+    if member.status != "active":
+        return render(
+            request,
+            "dashboard/member_not_linked.html",
+            {"reason": "inactive"},
+        )
+
+    now = timezone.now()
+
+    # Événements à venir ou en cours.
+    upcoming_events = (
+        Event.objects
+        .exclude(status="cancelled")
+        .filter(Q(date__gte=now) | Q(end_date__gte=now) | Q(end_date__isnull=True, date__date=timezone.localdate()))
+        .order_by("date")[:5]
+    )
+
+    # Cotisations de ce membre uniquement.
+    member_contributions = Contribution.objects.filter(
+        member=member
+    ).order_by("-created_at")
+
+    total_expected = (
+        member_contributions.aggregate(total=Sum("amount"))["total"]
+        or 0
+    )
+
+    total_paid = (
+        Payment.objects.filter(is_voided=False, contribution__member=member).aggregate(total=Sum("amount"))["total"]
+        or 0
+    )
+
+    remaining_total = sum(
+        max(contribution.amount - contribution.total_paid, 0)
+        for contribution in member_contributions
+    )
+
+    recent_contributions = member_contributions[:5]
+
+    latest_payments = (
+        Payment.objects.filter(is_voided=False, contribution__member=member)
+        .select_related("contribution")
+        .order_by("-payment_date", "-created_at")[:5]
+    )
+
+    return render(
+        request,
+        "dashboard/member_home.html",
+        {
+            "member": member,
+            "upcoming_events": upcoming_events,
+            "recent_contributions": recent_contributions,
+            "latest_payments": latest_payments,
+            "total_expected": total_expected,
+            "total_paid": total_paid,
+            "remaining_total": remaining_total,
+        },
+    )

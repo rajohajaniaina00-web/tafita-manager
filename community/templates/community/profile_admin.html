@@ -1,0 +1,70 @@
+{% extends "community/base_member.html" %}
+
+{% block title %}Mon compte | TaFiTa{% endblock %}
+{% block page_heading %}Mon compte{% endblock %}
+
+{% block content %}
+<section class="tafita-admin-profile">
+    <header class="tafita-admin-profile__intro">
+        <span class="tafita-admin-profile__eyebrow">COMPTE ADMINISTRATIF</span>
+        <h1>Votre compte TaFiTa</h1>
+        <p>
+            Ce compte dispose d'un accès de gestion. Il n'est pas nécessaire
+            de le rattacher à une fiche membre pour consulter ses informations.
+        </p>
+    </header>
+
+    <div class="tafita-admin-profile__card">
+        <div class="tafita-admin-profile__avatar" aria-hidden="true">
+            {{ profile_user.username|first|upper }}
+        </div>
+
+        <div class="tafita-admin-profile__identity">
+            <h2>{{ profile_user.get_full_name|default:profile_user.username }}</h2>
+            {% if profile_user.is_superuser %}
+                <span class="tafita-admin-profile__badge">Superadministrateur</span>
+            {% elif profile_user.is_staff %}
+                <span class="tafita-admin-profile__badge">Personnel administratif</span>
+            {% else %}
+                <span class="tafita-admin-profile__badge">Compte de gestion</span>
+            {% endif %}
+        </div>
+
+        <dl class="tafita-admin-profile__details">
+            <div>
+                <dt>Nom d'utilisateur</dt>
+                <dd>{{ profile_user.username }}</dd>
+            </div>
+            <div>
+                <dt>Nom complet</dt>
+                <dd>{{ profile_user.get_full_name|default:"Non renseigné" }}</dd>
+            </div>
+            <div>
+                <dt>Adresse e-mail</dt>
+                <dd>{{ profile_user.email|default:"Non renseignée" }}</dd>
+            </div>
+            <div>
+                <dt>État du compte</dt>
+                <dd>{% if profile_user.is_active %}Actif{% else %}Désactivé{% endif %}</dd>
+            </div>
+        </dl>
+
+        <p class="tafita-admin-profile__note">
+            La photo de profil membre est rattachée à une fiche membre.
+            Cette page affiche les informations du compte administratif ;
+            elle ne modifie ni les rôles ni les permissions.
+        </p>
+
+        <div class="tafita-admin-profile__actions">
+            {% if profile_user.is_superuser or perms.members.view_member or perms.events.view_event or perms.contributions.view_contribution %}
+                <a class="button button-primary" href="{% url 'dashboard' %}">
+                    Gestion associative
+                </a>
+            {% endif %}
+            <a class="button button-secondary" href="{% url 'community_feed' %}">
+                Retour à la communauté
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111d33">
+  <title>{% block title %}Espace membre TaFiTa{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/community.css' %}">
+</head>
+<body class="auth-page">
+  <main class="auth-shell">
+    <a href="{% url 'member_login' %}" class="brand-lockup">
+      <span class="brand-mark">T</span><span><b>TaFiTa</b><small>COMMUNAUTÉ</small></span>
+    </a>
+    <section class="auth-card">
+      {% if messages %}
+        <div class="notice-stack">
+          {% for message in messages %}<div class="notice notice-{{ message.tags|default:'info' }}">{{ message }}</div>{% endfor %}
+        </div>
+      {% endif %}
+      {% block auth_content %}{% endblock %}
+    </section>
+    <p class="auth-foot">Une communauté. Des projets. Un même engagement.</p>
+  </main>
+</body>
+</html>

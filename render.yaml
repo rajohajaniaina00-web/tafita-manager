@@ -1,0 +1,26 @@
+databases:
+  - name: tafita-manager-db
+    databaseName: tafita_manager
+    user: tafita_manager
+    plan: free
+    region: frankfurt
+
+services:
+  - type: web
+    name: tafita-manager-rajo
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: ./build.sh
+    startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings_production
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        value: .onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tafita-manager-db
+          property: connectionString

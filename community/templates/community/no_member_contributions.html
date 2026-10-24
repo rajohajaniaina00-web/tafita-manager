@@ -1,0 +1,29 @@
+{% extends "community/base_member.html" %}
+{% block title %}Mes cotisations | TaFiTa Communauté{% endblock %}
+{% block page_heading %}Mes cotisations{% endblock %}
+{% block content %}
+<div class="narrow-column">
+  <section class="surface event-detail-card personal-scope-notice">
+    <span class="eyebrow">ESPACE PERSONNEL</span>
+    <h1>Vos cotisations personnelles</h1>
+    <p class="muted-copy">
+      Cette page affiche uniquement les cotisations liées à votre propre fiche de membre.
+      Ce compte n'est actuellement associé à aucune fiche membre ; nous n'affichons donc
+      pas ici la liste financière générale de l'association.
+    </p>
+    <div class="personal-scope-actions">
+      <a href="{% url 'community_feed' %}" class="button button-primary">Retour à TaFiTa Communauté <span aria-hidden="true">→</span></a>
+      {% if request.user.is_superuser or request.user.is_staff or perms.contributions.view_contribution %}
+      <a href="{% url 'contribution_list' %}" class="button button-soft">Ouvrir la gestion des cotisations</a>
+      {% endif %}
+    </div>
+  </section>
+</div>
+<style>
+.personal-scope-notice { padding: clamp(24px,4vw,38px); }
+.personal-scope-notice h1 { margin: 8px 0 14px; font-family: Manrope,sans-serif; font-size: clamp(24px,3vw,32px); letter-spacing: -.8px; }
+.personal-scope-notice p { max-width: 730px; line-height: 1.85; }
+.personal-scope-actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:22px; }
+@media(max-width:560px) { .personal-scope-actions, .personal-scope-actions .button { width:100%; } }
+</style>
+{% endblock %}

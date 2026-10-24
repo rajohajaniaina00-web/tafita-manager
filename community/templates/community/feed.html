@@ -1,0 +1,55 @@
+{% extends "community/base_member.html" %}
+{% load static %}
+{% block title %}Fil d’actualité | TaFiTa{% endblock %}
+{% block page_heading %}Fil d’actualité{% endblock %}
+{% block content %}
+<div class="feed-layout">
+  <section class="feed-column">
+    <div class="welcome-banner">
+      <div><span class="eyebrow eyebrow-light">BIENVENUE DANS LA COMMUNAUTÉ</span><h1>Bonjour {{ request.user.first_name|default:request.user.username }} 👋</h1><p>Les actualités et les moments forts de TaFiTa, réunis au même endroit.</p></div>
+      <div class="welcome-orbit" aria-hidden="true"><span> T </span></div>
+    </div>
+
+    <section class="surface compose-card">
+      <div class="section-heading-inline"><div><span class="eyebrow">VOTRE VOIX COMPTE</span><h2>Partager une publication</h2></div><span class="round-icon">＋</span></div>
+      <form method="post" action="{% url 'community_create_post' %}" enctype="multipart/form-data" class="compose-form">
+        {% csrf_token %}
+        <label class="sr-only" for="id_content">Votre publication</label>
+        {{ post_form.content }}
+        {% if post_form.content.errors %}<div class="field-errors">{{ post_form.content.errors }}</div>{% endif %}
+        <div class="compose-actions"><label class="upload-control" for="id_image">＋ Ajouter une image</label>{{ post_form.image }}<button type="submit" class="button button-primary">{% if request.user.is_staff or request.user.is_superuser or perms.members.change_member or perms.events.add_event %}Publier{% else %}Envoyer pour validation{% endif %} <span aria-hidden="true">→</span></button></div>
+        <p class="form-hint">Les publications des membres sont vérifiées par l’administration avant d’être visibles par tous.</p>
+      </form>
+    </section>
+
+    {% if own_pending_posts %}
+    <section class="pending-own surface"><div class="section-heading-inline"><h2>Mes publications en attente</h2><span class="status status-pending">{{ own_pending_posts|length }}</span></div><p>Ces publications seront visibles dans le fil après validation de l’administration.</p>{% for pending in own_pending_posts %}<div class="pending-row"><span>{{ pending.content|default:"Publication avec image"|truncatechars:100 }}</span><small>En attente</small></div>{% endfor %}</section>
+    {% endif %}
+
+    <div class="feed-section-title"><div><span class="eyebrow">LA VIE DE L’ASSOCIATION</span><h2>Actualités récentes</h2></div></div>
+    {% for post in posts %}
+      <article class="surface post-card" id="post-{{ post.id }}">
+        <header class="post-author">{% include "community/includes/avatar.html" with avatar_user=post.author avatar_size="avatar" only %}<div class="post-author-meta"><strong>{{ post.author.get_full_name|default:post.author.username }}</strong><small>{{ post.created_at|date:"d/m/Y · H:i" }}</small></div><span class="post-menu-dot">•••</span></header>
+        {% if post.content %}<div class="post-content">{{ post.content|linebreaksbr }}</div>{% endif %}
+        {% if post.image %}<div class="post-image-wrap"><img src="{{ post.image.url }}" alt="Image publiée par {{ post.author.username }}" loading="lazy"></div>{% endif %}
+        <div class="post-stat-line"><span>♥ {{ post.love_count }} J’adore</span><span>{{ post.comment_count }} commentaire{{ post.comment_count|pluralize:"s" }}</span></div>
+        <div class="post-action-row"><form method="post" action="{% url 'community_post_love' post.id %}">{% csrf_token %}<button class="post-action {% if post.user_loved %}is-loved{% endif %}" type="submit" aria-label="J’adore cette publication">♥ <span>J’adore</span></button></form><a href="#comments-{{ post.id }}" class="post-action">▢ <span>Commenter</span></a></div>
+        <div class="post-comments" id="comments-{{ post.id }}">
+          {% for comment in post.comments.all|slice:":4" %}<div class="comment-row">{% include "community/includes/avatar.html" with avatar_user=comment.author avatar_size="avatar-tiny" only %}<p><strong>{{ comment.author.get_full_name|default:comment.author.username }}</strong> {{ comment.content }} <small>{{ comment.created_at|date:"d/m H:i" }}</small></p></div>{% endfor %}
+          <form method="post" action="{% url 'community_post_comment' post.id %}" class="comment-form">{% csrf_token %}<label class="sr-only" for="comment-{{ post.id }}">Commenter</label><input id="comment-{{ post.id }}" type="text" name="content" maxlength="1500" placeholder="Écrire un commentaire…" required><button type="submit" aria-label="Envoyer le commentaire">➤</button></form>
+        </div>
+      </article>
+    {% empty %}
+      <div class="surface empty-state"><span class="empty-art">✦</span><h3>Le fil commence ici</h3><p>Partagez les nouvelles de TaFiTa. Les publications des membres apparaîtront après validation.</p></div>
+    {% endfor %}
+  </section>
+
+  <aside class="feed-rail">
+    <section class="surface rail-card" id="events"><div class="section-heading-inline"><div><span class="eyebrow">À VOS AGENDAS</span><h2>Événements</h2></div><span class="round-icon">▦</span></div>
+      {% for event in upcoming_events %}<article class="event-mini"><div class="event-date"><strong>{{ event.date|date:"d" }}</strong><span>{{ event.date|date:"M" }}</span></div><div class="event-mini-body"><a href="{% url 'community_event_detail' event.id %}"><strong>{{ event.title }}</strong></a><small>{{ event.date|date:"d/m/Y · H:i" }}</small><small>⌖ {{ event.location }}</small><div class="event-mini-social"><span>♥ {{ event.love_count }}</span><span>▢ {{ event.comment_count }}</span></div></div></article>{% empty %}<p class="muted-copy">Aucun événement à venir pour le moment.</p>{% endfor %}
+    </section>
+    <section class="gradient-rail-card"><span class="rail-star">✦</span><span class="eyebrow eyebrow-light">ENSEMBLE</span><h2>La force du collectif.</h2><p>Un espace pour partager, s’entraider et faire vivre les projets de l’association.</p><a href="{% url 'community_discussions' %}" class="rail-link">Rejoindre les discussions <span>→</span></a></section>
+    <div class="rail-footer">TaFiTa Manager · Communauté privée<br>Respect · Solidarité · Engagement</div>
+  </aside>
+</div>
+{% endblock %}

@@ -29,3 +29,27 @@ config/settings.py.backup
 *.backup
 *.backup-*
 *.before-*.bak
+
+# Sauvegardes locales horodatees
+*.backup_*
+*.before_*
+*.before-*
+*_backup_*
+*_before_*
+
+# Images de profil et fichiers locaux importes
+member_avatars/
+
+# Fichiers téléversés par les utilisateurs : ne pas publier
+community/posts/
+member_avatars/
+
+# Copies locales de sauvegarde
+*_backup.*
+*_backup_*
+*_before_*
+*.backup_*
+*.before_*
+
+# Anciennes copies de templates
+community/templates/community/*_backup.html

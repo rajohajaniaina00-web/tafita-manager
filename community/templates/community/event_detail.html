@@ -1,0 +1,20 @@
+{% extends "community/base_member.html" %}
+{% block title %}{{ event.title }} | TaFiTa{% endblock %}
+{% block page_heading %}Événement{% endblock %}
+{% block content %}
+<div class="narrow-column">
+  <a class="back-link" href="{% url 'community_feed' %}#events">← Retour au fil</a>
+  <article class="surface event-detail-card">
+    <span class="eyebrow">AGENDA TAFITA</span>
+    <h1>{{ event.title }}</h1>
+    <div class="event-detail-meta"><span>◷ {{ event.date|date:"l d F Y · H:i" }}</span><span>⌖ {{ event.location }}</span><span>Responsable : {{ event.responsible }}</span></div>
+    <div class="event-detail-status"><span class="status">{{ event.current_status_display }}</span></div>
+    {% if event.description %}<div class="event-description">{{ event.description|linebreaks }}</div>{% endif %}
+    <div class="event-detail-actions"><form method="post" action="{% url 'community_event_love' event.id %}">{% csrf_token %}<button class="button {% if user_loved %}button-loved{% else %}button-soft{% endif %}" type="submit">♥ J’adore · {{ love_count }}</button></form></div>
+  </article>
+  <section class="surface comments-panel"><div class="section-heading-inline"><div><span class="eyebrow">ÉCHANGEONS</span><h2>Commentaires</h2></div></div>
+    <form method="post" action="{% url 'community_event_comment' event.id %}" class="comment-form event-comment-form">{% csrf_token %}{{ comment_form.content }}<button type="submit" class="button button-primary">Envoyer</button></form>
+    {% for comment in comments %}<div class="comment-row comment-row-large">{% include "community/includes/avatar.html" with avatar_user=comment.author avatar_size="avatar" only %}<p><strong>{{ comment.author.get_full_name|default:comment.author.username }}</strong><small>{{ comment.created_at|date:"d/m/Y · H:i" }}</small>{{ comment.content }}</p></div>{% empty %}<p class="muted-copy">Pas encore de commentaire. Lancez la conversation !</p>{% endfor %}
+  </section>
+</div>
+{% endblock %}

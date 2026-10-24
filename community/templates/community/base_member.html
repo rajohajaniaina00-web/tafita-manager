@@ -1,0 +1,198 @@
+
+{% load static %}
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111d33">
+
+    <title>{% block title %}TaFiTa Communauté{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/community.css' %}">
+    <link rel="stylesheet" href="{% static 'css/community-layout-fix.css' %}">
+    <link rel="stylesheet" href="{% static 'css/member-avatars.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="community-page">
+
+<div class="community-layout">
+
+    <!-- ================= MENU LATÉRAL ================= -->
+    <aside class="community-sidebar" id="communitySidebar">
+
+        <!-- IDENTITÉ TAFITA -->
+        <a href="{% url 'community_feed' %}" class="brand-lockup">
+            <span class="brand-mark">T</span>
+            <span>
+                <b>TaFiTa</b>
+                <small>COMMUNAUTÉ</small>
+            </span>
+        </a>
+
+        <!-- NAVIGATION PRINCIPALE -->
+        <div class="sidebar-caption">VOTRE ASSOCIATION</div>
+
+        <nav class="community-nav" aria-label="Navigation principale">
+
+            <!-- FIL D'ACTUALITÉ -->
+            <a href="{% url 'community_feed' %}"
+               class="community-nav-link {% if request.resolver_match.url_name == 'community_feed' %}is-active{% endif %}"
+               {% if request.resolver_match.url_name == 'community_feed' %}aria-current="page"{% endif %}>
+                <span aria-hidden="true">⌂</span>
+                <span>Fil d’actualité</span>
+            </a>
+
+            <!-- DISCUSSIONS -->
+            <a href="{% url 'community_discussions' %}"
+               class="community-nav-link {% if request.resolver_match.url_name == 'community_discussions' or 'conversation' in request.resolver_match.url_name %}is-active{% endif %}"
+               {% if request.resolver_match.url_name == 'community_discussions' or 'conversation' in request.resolver_match.url_name %}aria-current="page"{% endif %}>
+                <span aria-hidden="true">◌</span>
+                <span>Discussions</span>
+            </a>
+
+            <!-- COMPTE PERSONNEL -->
+            <a href="{% url 'community_member_profile' %}"
+               class="community-nav-link {% if request.resolver_match.url_name == 'community_member_profile' %}is-active{% endif %}"
+               {% if request.resolver_match.url_name == 'community_member_profile' %}aria-current="page"{% endif %}>
+                <span aria-hidden="true">◉</span>
+                <span>Mon compte</span>
+            </a>
+
+            <!-- ================= ADMINISTRATION ================= -->
+            {% if request.user.is_staff or request.user.is_superuser or perms.members.change_member or perms.events.add_event %}
+
+                <div class="sidebar-caption sidebar-caption-spaced">
+                    ADMINISTRATION
+                </div>
+
+                <a href="{% url 'community_activation_codes' %}"
+                   class="community-nav-link {% if request.resolver_match.url_name == 'community_activation_codes' %}is-active{% endif %}">
+                    <span aria-hidden="true">♙</span>
+                    <span>Codes des membres</span>
+                </a>
+
+                <a href="{% url 'community_post_moderation' %}"
+                   class="community-nav-link {% if request.resolver_match.url_name == 'community_post_moderation' %}is-active{% endif %}">
+                    <span aria-hidden="true">✓</span>
+                    <span>Valider les publications</span>
+                </a>
+
+                <a href="{% url 'community_payment_moderation' %}"
+                   class="community-nav-link {% if request.resolver_match.url_name == 'community_payment_moderation' %}is-active{% endif %}">
+                    <span aria-hidden="true">Ar</span>
+                    <span>Valider les paiements</span>
+                </a>
+
+                <a href="{% url 'dashboard' %}"
+                   class="community-nav-link {% if request.resolver_match.url_name == 'dashboard' %}is-active{% endif %}">
+                    <span aria-hidden="true">▤</span>
+                    <span>Gestion associative</span>
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+        <!-- ================= PROFIL ET DÉCONNEXION ================= -->
+        <div class="community-sidebar-bottom">
+
+            <a href="{% url 'community_member_profile' %}"
+               class="mini-profile"
+               aria-label="Ouvrir mon compte">
+
+                {% include "community/includes/avatar.html" with avatar_user=request.user avatar_size="avatar-small" only %}
+
+                <span>
+                    <b>{{ request.user.get_full_name|default:request.user.username }}</b>
+                    <small>
+                        {% if request.user.is_staff or request.user.is_superuser %}
+                            Administration
+                        {% else %}
+                            Membre TaFiTa
+                        {% endif %}
+                    </small>
+                </span>
+
+            </a>
+
+            <form method="post" action="{% url 'member_logout' %}">
+                {% csrf_token %}
+
+                <button type="submit" class="sidebar-logout">
+                    <span aria-hidden="true">↪</span>
+                    <span>Déconnexion</span>
+                </button>
+            </form>
+
+        </div>
+
+    </aside>
+
+    <!-- ================= CONTENU PRINCIPAL ================= -->
+    <main class="community-main">
+
+        <!-- BARRE SUPÉRIEURE -->
+        <header class="community-topbar">
+
+            <button
+                type="button"
+                class="mobile-nav-toggle"
+                id="communityMenuToggle"
+                aria-controls="communitySidebar"
+                aria-expanded="false"
+                aria-label="Ouvrir le menu">
+                ☰
+            </button>
+
+            <div class="topbar-title">
+                <span class="eyebrow">ESPACE ASSOCIATIF</span>
+
+                <strong>
+                    {% block page_heading %}Communauté{% endblock %}
+                </strong>
+            </div>
+
+            <div class="topbar-actions">
+                <span class="online-dot" aria-hidden="true"></span>
+                <span>Communauté TaFiTa</span>
+            </div>
+
+        </header>
+
+        <!-- CONTENU DE LA PAGE -->
+        <div class="community-content">
+
+            {% if messages %}
+                <div class="notice-stack" role="status" aria-live="polite">
+                    {% for message in messages %}
+                        <div class="notice notice-{{ message.tags|default:'info' }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+
+        </div>
+
+        <!-- PIED DE PAGE -->
+        <footer class="community-footer">
+            <span>TaFiTa Communauté</span>
+            <span>Grandir ensemble, agir ensemble.</span>
+        </footer>
+
+    </main>
+
+</div>
+
+<!-- JAVASCRIPT DU MENU RESPONSIVE -->
+<script src="{% static 'js/community.js' %}" defer></script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+{% extends "community/base_member.html" %}
+{% load static %}
+{% block title %}{{ display_title }} | TaFiTa{% endblock %}
+{% block page_heading %}Discussions{% endblock %}
+{% block content %}
+<div class="chat-page"><a href="{% url 'community_discussions' %}" class="back-link">← Toutes les discussions</a><section class="surface chat-card"><header class="chat-header"><span class="conversation-avatar {% if conversation.kind == 'general' %}conversation-avatar-general{% endif %}">{% if conversation.kind == 'general' %}✦{% elif conversation.kind == 'group' %}♧{% else %}◉{% endif %}</span><div><h1>{{ display_title }}</h1><p>{% if conversation.kind == 'general' %}Discussion de toute l’association{% elif conversation.kind == 'group' %}Conversation de groupe{% else %}Conversation privée{% endif %}</p></div><span class="online-dot"></span></header>
+<div class="chat-message-list" id="chatMessageList" data-poll-url="{% url 'community_messages_json' conversation.id %}" data-last-id="{{ last_message_id }}">
+{% for message in messages_list %}<article class="chat-message {% if message.sender_id == request.user.id %}message-mine{% endif %}" data-message-id="{{ message.id }}">{% include "community/includes/avatar.html" with avatar_user=message.sender avatar_size="avatar-tiny" only %}<div class="chat-bubble"><div class="chat-sender">{{ message.sender.get_full_name|default:message.sender.username }} <time>{{ message.created_at|date:"d/m H:i" }}</time></div><p>{{ message.content }}</p></div></article>{% empty %}<div class="chat-empty" id="chatEmpty"><span>✦</span><strong>La conversation commence ici</strong><p>Envoyez le premier message.</p></div>{% endfor %}
+</div>
+<form method="post" class="chat-composer">{% csrf_token %}<label class="sr-only" for="id_content">Votre message</label>{{ message_form.content }}<button type="submit" class="button button-primary" aria-label="Envoyer le message">Envoyer ↑</button></form>
+</section></div>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'js/chat.js' %}" defer></script>{% endblock %}

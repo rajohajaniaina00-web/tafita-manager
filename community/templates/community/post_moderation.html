@@ -1,0 +1,9 @@
+{% extends "community/base_member.html" %}
+{% block title %}Modération | TaFiTa{% endblock %}
+{% block page_heading %}Modération des publications{% endblock %}
+{% block content %}
+<div class="page-intro"><div><span class="eyebrow">ESPACE ADMINISTRATEUR</span><h1>Publications à valider</h1><p>Les publications des membres ne sont visibles publiquement qu’après approbation.</p></div></div>
+{% for post in pending_posts %}
+<article class="surface moderation-card"><header class="post-author">{% include "community/includes/avatar.html" with avatar_user=post.author avatar_size="avatar" only %}<div class="post-author-meta"><strong>{{ post.author.get_full_name|default:post.author.username }}</strong><small>{{ post.created_at|date:"d/m/Y · H:i" }}</small></div><span class="status status-pending">En attente</span></header>{% if post.content %}<div class="post-content">{{ post.content|linebreaksbr }}</div>{% endif %}{% if post.image %}<div class="moderation-image"><img src="{{ post.image.url }}" alt="Image à modérer"></div>{% endif %}<form method="post" action="{% url 'community_moderate_post' post.id 'approve' %}" class="moderation-actions">{% csrf_token %}<button class="button button-primary" type="submit">✓ Approuver</button></form><form method="post" action="{% url 'community_moderate_post' post.id 'reject' %}" class="moderation-actions">{% csrf_token %}<input type="text" name="moderation_note" maxlength="300" placeholder="Motif du refus (facultatif)"><button class="button button-danger" type="submit">Refuser</button></form></article>
+{% empty %}<div class="surface empty-state"><span class="empty-art">✓</span><h3>Tout est à jour</h3><p>Aucune publication en attente de validation.</p></div>{% endfor %}
+{% endblock %}
