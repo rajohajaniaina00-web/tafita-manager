@@ -175,3 +175,44 @@ LOGGING = {
 }
 
 from . import diagnostics as _tafita_diagnostics
+
+
+# --- Stockage des médias Cloudinary ---
+# Les identifiants sont fournis par les variables d'environnement Render.
+import os as _cloudinary_os
+
+_cloudinary_credentials = {
+    "CLOUD_NAME": _cloudinary_os.environ.get("CLOUDINARY_CLOUD_NAME", "").strip(),
+    "API_KEY": _cloudinary_os.environ.get("CLOUDINARY_API_KEY", "").strip(),
+    "API_SECRET": _cloudinary_os.environ.get("CLOUDINARY_API_SECRET", "").strip(),
+}
+
+_cloudinary_missing = [
+    key for key, value in _cloudinary_credentials.items() if not value
+]
+if _cloudinary_missing:
+    raise RuntimeError(
+        "Variables Cloudinary manquantes : "
+        + ", ".join(_cloudinary_missing)
+    )
+
+INSTALLED_APPS = list(INSTALLED_APPS)
+for _cloudinary_app in ("cloudinary_storage", "cloudinary"):
+    if _cloudinary_app not in INSTALLED_APPS:
+        INSTALLED_APPS.append(_cloudinary_app)
+
+CLOUDINARY_STORAGE = {
+    **_cloudinary_credentials,
+    "SECURE": True,
+}
+
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+MEDIA_URL = "/media/"
